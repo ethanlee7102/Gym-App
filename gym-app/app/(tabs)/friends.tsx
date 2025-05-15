@@ -10,9 +10,8 @@ export default function TabTwoScreen() {
   return (
     <ParallaxScrollView>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Profile</ThemedText>
+        <ThemedText type="title">Friends</ThemedText>
       </ThemedView>
-      
     </ParallaxScrollView>
   );
 }
