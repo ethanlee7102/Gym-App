@@ -16,7 +16,7 @@ export default function HomeScreen() {
     const checkToken = async () => { //this checks if there is a token (already logged in)
       const token = await AsyncStorage.getItem('token');
       if (!token) { //if there isnt redirects to the login
-        router.replace('/login');
+        router.replace('../login');
       }
       setLoading(false);
     };

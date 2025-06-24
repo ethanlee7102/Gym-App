@@ -23,7 +23,7 @@ export default function TabTwoScreen() {
 
   const logout = async () => {
     await AsyncStorage.removeItem('token');
-    router.replace('/login');
+    router.replace('../login');
   };
 
    useEffect(() => {
