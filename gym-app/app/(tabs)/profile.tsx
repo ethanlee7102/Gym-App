@@ -17,6 +17,7 @@ interface UserInfo {
   friends: string[];
 }
 const screenWidth = Dimensions.get('window').width;
+
 export default function TabTwoScreen() {
   const screenWidth = Dimensions.get('window').width;
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   },
   settingsButton:{
     paddingTop: screenWidth * 0.04,
-    marginLeft: screenWidth * 0.21,
+    marginLeft: 'auto',
   },
   unContainer: {
     paddingTop: 20,

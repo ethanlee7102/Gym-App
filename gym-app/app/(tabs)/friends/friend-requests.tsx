@@ -1,5 +1,5 @@
-import { StyleSheet, Image, Platform } from 'react-native';
-
+import { StyleSheet, Image, Platform, Pressable } from 'react-native';
+import { router } from 'expo-router';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -10,8 +10,11 @@ export default function TabTwoScreen() {
   return (
     <ParallaxScrollView>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Friends</ThemedText>
+        <ThemedText type="title">Friend Requests</ThemedText>
       </ThemedView>
+      <Pressable>
+        <ThemedText onPress={() => router.push('/(tabs)/friends')}>Back</ThemedText>
+      </Pressable>
     </ParallaxScrollView>
   );
 }
