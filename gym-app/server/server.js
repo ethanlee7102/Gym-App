@@ -31,7 +31,7 @@ app.post("/login", async(req,res) => {
     else{
         res.status(401).send({ error: 'Invalid credentials' });
     }
-})
+});
 
 app.post('/register', async(req, res) => {
     console.log("register post")
@@ -47,7 +47,25 @@ app.post('/register', async(req, res) => {
     }catch(e){
         res.status(500).send({ error: 'Server error' });
     }
-})
+});
+
+app.get('/me', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).send({ error: 'Unauthorized' });
+    try{
+        const { username } = jwt.verify(token, SECRET);
+        const user = await User.findOne({ username });
+        if (!user) {
+
+            return res.status(404).send({ error: 'User not found' });
+        }
+        res.send({
+            username: user.username,
+        });
+    } catch(e){
+        return res.status(403).send({ error: 'Invalid token' });
+    }
+});
 
 app.use((req, res) => {
     res.status(404).send({ error: 'Not found', path: req.originalUrl });

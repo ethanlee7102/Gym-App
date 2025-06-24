@@ -7,6 +7,7 @@ import { login, register } from './api/api';
 import NoTabSV from '@/components/NoTabSV';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Image } from 'react-native';
 
 export default function Login() {
     const router = useRouter();
@@ -37,9 +38,16 @@ export default function Login() {
 
     return(
         <NoTabSV>
+            <Image
+                source={require('@/assets/images/dumbell.png')} // adjust path as needed
+                style={[styles.dumbell, { tintColor: 'white' }]}
+                resizeMode="contain"
+            />
             <ThemedView style={styles.titleContainer}>
-                    <ThemedText type="title">Login</ThemedText>
+                    <ThemedText type="title">Login To GymApp</ThemedText>
             </ThemedView>
+            
+            <View style={styles.container}>
             <View style={styles.inputContainer}>
                 <TextInput
                 style={styles.input}
@@ -63,18 +71,17 @@ export default function Login() {
                 style={styles.loginButton}
                 onPress={handleLogin}
                 >
-                    <Text>Login</Text>
+                    <ThemedText type='defaultSemiBold'>Login</ThemedText>
                 </Pressable>
                 <Pressable 
                 style={styles.registerButton}
                 onPress={handleRegister}
                 >
-                    <Text >Register</Text>
+                    <ThemedText type='defaultSemiBold'>Register</ThemedText>
                 </Pressable>
             </View>
             {error ? <Text style={{ textAlign: 'center', color: 'red' }}>{error}</Text> : null}
-
-            <Pressable onPress={() => router.push('/')}><ThemedText>Login</ThemedText></Pressable>
+            </View>
         </NoTabSV>
     )
 }
@@ -82,33 +89,43 @@ export default function Login() {
 const styles = StyleSheet.create({
     titleContainer: {
         flexDirection: 'row',
+        justifyContent: 'center',
         gap: 8,
+        marginBottom: 50,
     },
     container:{
+        paddingTop:45,
+        marginTop: 0,
+        padding: 30,
         flex:1,
-        backgroundColor: 'white',
+        backgroundColor: '#373737',
+        borderRadius: 10,
+        borderColor: '#AFAFAF',
+        borderWidth: 3
     },
     inputContainer: {
         alignItems: 'center',
+        
     },
     input:{
-        borderColor: 'black',
-        borderWidth: 1,
+        backgroundColor: '#1C1C1C',
+        borderColor: '#AFAFAF',
+        borderWidth: 2,
         borderRadius: 5,
         padding: 10,
         fontSize: 18,
         width: '100%',
         maxWidth: 400,
         marginBottom: 10,
-        
+        color: 'white',
     },
     buttonContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 10,
-        marginTop: 0,
-        padding: 10,
+        marginTop: 10,
+        padding: 0,
         width: '100%',
         maxWidth: 1024,
         marginHorizontal: 'auto',
@@ -120,11 +137,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
         padding: 10,
-        paddingVertical: 13,
-        backgroundColor: 'grey',
+        paddingVertical: 9,
+        backgroundColor: '#1C1C1C',
+        borderColor: '#AFAFAF',
+        borderWidth: 1,
         margin: 5,
         
-        maxWidth: 120,
+        maxWidth: 200,
     },
     registerButton: {
         flex: 1,
@@ -132,9 +151,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
         padding: 10,
-        paddingVertical: 13,
-        backgroundColor: 'grey',
+        paddingVertical: 9,
+        backgroundColor: '#1C1C1C',
+        borderColor: '#AFAFAF',
+        borderWidth: 1,
         margin: 5,
-        maxWidth: 120,
-    }
+        maxWidth: 200,
+    },
+    dumbell: {
+        width: 150,
+        height: 150,
+        alignSelf: 'center',
+        marginTop: 20,
+      },
 })

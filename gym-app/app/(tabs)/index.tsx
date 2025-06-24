@@ -6,10 +6,11 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getMe } from '../api/api';
 
 export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState('');
+  const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
     const checkToken = async () => { //this checks if there is a token (already logged in)
@@ -22,6 +23,13 @@ export default function HomeScreen() {
 
     checkToken();
   }, []);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const res = await getMe();
+      setUserInfo(res.data);
+    }
+  })
 
 
   if (loading) {

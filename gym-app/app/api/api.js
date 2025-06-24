@@ -8,3 +8,10 @@ export const register = (username, password) =>
 
 export const login = (username, password) =>
     axios.post(`${API_BASE}/login`, {username, password});
+
+export const getMe = async () => { 
+    const token = await AsyncStorage.getItem('token');
+    return axios.get(`${API_BASE}/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  };
