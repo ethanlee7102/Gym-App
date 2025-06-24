@@ -1,11 +1,37 @@
-import {Pressable, Image, StyleSheet, Platform, Text } from 'react-native';
+import {Pressable, Image, StyleSheet, Platform, Text, View, ActivityIndicator} from 'react-native';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen() {
-  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const checkToken = async () => { //this checks if there is a token (already logged in)
+      const token = await AsyncStorage.getItem('token');
+      if (!token) { //if there isnt redirects to the login
+        router.replace('/login');
+      }
+      setLoading(false);
+    };
+
+    checkToken();
+  }, []);
+
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+        <Text>Checking login...</Text>
+      </View>
+    );
+  }
 
   return (
   <ThemedView style={styles.container}>

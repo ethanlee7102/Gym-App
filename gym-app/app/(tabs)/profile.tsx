@@ -1,17 +1,27 @@
-import { StyleSheet, Image, Platform } from 'react-native';
-
+import { StyleSheet, Image, Platform, Pressable } from 'react-native';
+import { router } from 'expo-router';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TabTwoScreen() {
+
+  const logout = async () => {
+    await AsyncStorage.removeItem('token');
+    router.replace('/login');
+  };
+
   return (
     <ParallaxScrollView>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Profile</ThemedText>
       </ThemedView>
+      <Pressable onPress={logout}>
+        <ThemedText>Logout</ThemedText>
+      </Pressable>
       
     </ParallaxScrollView>
   );

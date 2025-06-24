@@ -34,7 +34,9 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="stats"
         options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
-      />
+        />
+        <Stack.Screen name="login" options={{ headerShown: false }}/>
+      
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
