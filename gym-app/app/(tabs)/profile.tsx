@@ -14,7 +14,6 @@ import { Dimensions } from 'react-native';
 
 interface UserInfo {
   username: string;
-  friends: string[];
 }
 const screenWidth = Dimensions.get('window').width;
 

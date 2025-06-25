@@ -19,7 +19,7 @@ export default function TabTwoScreen() {
     <ParallaxScrollView>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Friends</ThemedText>
-            <Pressable style={styles.button} onPress={() => router.push('/friends/friend-requests')}>
+            <Pressable style={styles.button} onPress={() => router.push('/friends/add-friend')}>
               <ThemedText type='smallSemiBold'>+ Add Friends</ThemedText>
             </Pressable>
       </ThemedView>
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: 'row',
+    paddingTop: 10,
     
  
   },
