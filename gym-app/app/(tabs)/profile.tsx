@@ -13,68 +13,69 @@ import { Dimensions } from 'react-native';
 
 
 interface UserInfo {
-  username: string;
-  friends: string[];
+    username: string;
 }
+
 const screenWidth = Dimensions.get('window').width;
+
 export default function TabTwoScreen() {
-  const screenWidth = Dimensions.get('window').width;
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+    const screenWidth = Dimensions.get('window').width;
+    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
-  const logout = async () => {
-    await AsyncStorage.removeItem('token');
-    router.replace('../login');
-  };
+    const logout = async () => {
+        await AsyncStorage.removeItem('token');
+        router.replace('../login');
+    };
 
-   useEffect(() => {
-      const fetchUserInfo = async () => {
-        const res = await getMe();
-        setUserInfo(res.data);
-      }
-      fetchUserInfo();
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            const res = await getMe();
+            setUserInfo(res.data);
+        }
+        fetchUserInfo();
     })
-  if (!userInfo) {
-    return <Text style={{ color: 'white' }}>Loading...</Text>;
-  }
-  return (
-    <ParallaxScrollView>
-      <ThemedView style={styles.profileContainer}>
-        <Ionicons name="add-circle" size={98} color="#D9D9D9" style={{ marginLeft: screenWidth * -0.03 }}></Ionicons>
-        <ThemedView style={styles.unContainer}>
-          <ThemedText type="subtitle">{userInfo.username}</ThemedText>
-          <ThemedText type="greyed">Custom Title (edit)</ThemedText> 
-          
-        </ThemedView>
-        <Ionicons name="cog" size={38} color="#D9D9D9" style={styles.settingsButton}></Ionicons>
+    if (!userInfo) {
+        return <Text style={{ color: 'white' }}>Loading...</Text>;
+    }
+    return (
+        <ParallaxScrollView>
+            <ThemedView style={styles.profileContainer}>
+                <Ionicons name="add-circle" size={98} color="#D9D9D9" style={{ marginLeft: screenWidth * -0.03 }}></Ionicons>
+                <ThemedView style={styles.unContainer}>
+                    <ThemedText type="subtitle">{userInfo.username}</ThemedText>
+                    <ThemedText type="greyed">Custom Title (edit)</ThemedText>
 
-        
-      </ThemedView>
-      <Pressable onPress={logout}>
-        <ThemedText>Logout</ThemedText>
-      </Pressable>
-    
-      
-    </ParallaxScrollView>
-  );
+                </ThemedView>
+                <Ionicons name="cog" size={38} color="#D9D9D9" style={styles.settingsButton}></Ionicons>
+
+
+            </ThemedView>
+            <Pressable onPress={logout}>
+                <ThemedText>Logout</ThemedText>
+            </Pressable>
+
+
+        </ParallaxScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  settingsButton:{
-    paddingTop: screenWidth * 0.04,
-    marginLeft: screenWidth * 0.21,
-  },
-  unContainer: {
-    paddingTop: 20,
-    paddingLeft: 25,
-    flexDirection: 'column',
-    gap: 1,
-  },
-  profileContainer: {
-    flexDirection: 'row',
-    gap: 1,
-  }
+    titleContainer: {
+        flexDirection: 'row',
+        gap: 8,
+    },
+    settingsButton: {
+        paddingTop: screenWidth * 0.04,
+        marginLeft: 'auto',
+    },
+    unContainer: {
+        paddingTop: 20,
+        paddingLeft: 25,
+        flexDirection: 'column',
+        gap: 1,
+    },
+    profileContainer: {
+        flexDirection: 'row',
+        gap: 1,
+    }
 });

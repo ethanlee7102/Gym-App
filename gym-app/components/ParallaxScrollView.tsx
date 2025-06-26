@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 60,
-    padding: 32,
+    padding: 27,
     gap: 16,
   },
 });

@@ -27,9 +27,7 @@ export default function Login() {
 
     const handleRegister = async () => {
         try{
-            console.log(" tried to reg1 ")
             await register(username, password);
-            console.log(" tried to reg ")
             handleLogin();
         }catch(e){
             setError("Registration Failed")
@@ -48,39 +46,39 @@ export default function Login() {
             </ThemedView>
             
             <View style={styles.container}>
-            <View style={styles.inputContainer}>
-                <TextInput
-                style={styles.input}
-                placeholder = "Username"
-                placeholderTextColor="gray"
-                value = {username}
-                onChangeText={setUsername}
-                />
-                <TextInput
-                secureTextEntry={true}
-                style={styles.input}
-                placeholder = "Password"
-                placeholderTextColor="gray"
-                value = {password}
-                onChangeText={setPassword}
-                
-                />
-            </View>
-            <View style={styles.buttonContainer}>
-                <Pressable 
-                style={styles.loginButton}
-                onPress={handleLogin}
-                >
-                    <ThemedText type='defaultSemiBold'>Login</ThemedText>
-                </Pressable>
-                <Pressable 
-                style={styles.registerButton}
-                onPress={handleRegister}
-                >
-                    <ThemedText type='defaultSemiBold'>Register</ThemedText>
-                </Pressable>
-            </View>
-            {error ? <Text style={{ textAlign: 'center', color: 'red' }}>{error}</Text> : null}
+                <View style={styles.inputContainer}>
+                    <TextInput
+                    style={styles.input}
+                    placeholder = "Username"
+                    placeholderTextColor="gray"
+                    value = {username}
+                    onChangeText={setUsername}
+                    />
+                    <TextInput
+                    secureTextEntry={true}
+                    style={styles.input}
+                    placeholder = "Password"
+                    placeholderTextColor="gray"
+                    value = {password}
+                    onChangeText={setPassword}
+                    
+                    />
+                </View>
+                <View style={styles.buttonContainer}>
+                    <Pressable 
+                    style={styles.loginButton}
+                    onPress={handleLogin}
+                    >
+                        <ThemedText type='defaultSemiBold'>Login</ThemedText>
+                    </Pressable>
+                    <Pressable 
+                    style={styles.registerButton}
+                    onPress={handleRegister}
+                    >
+                        <ThemedText type='defaultSemiBold'>Register</ThemedText>
+                    </Pressable>
+                </View>
+                {error ? <Text style={{ textAlign: 'center', color: 'red' }}>{error}</Text> : null}
             </View>
         </NoTabSV>
     )

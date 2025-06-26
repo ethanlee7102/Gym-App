@@ -5,7 +5,8 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'greyed';
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'greyed' | 'smallSemiBold' | 'underlined'
+        | 'greyedSub';
 };
 
 export function ThemedText({
@@ -27,6 +28,9 @@ export function ThemedText({
         type === 'subtitle' ? styles.subtitle : undefined,
         type === 'link' ? styles.link : undefined,
         type === 'greyed' ? styles.greyed : undefined,
+        type === 'smallSemiBold' ? styles.smallSemiBold : undefined,
+        type === 'underlined' ? styles.underlined : undefined,
+        type === 'greyedSub' ? styles.greyedSub : undefined,
         style,
       ]}
       {...rest}
@@ -62,5 +66,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: '#717171',
+  },
+  smallSemiBold: {
+    fontSize: 13,
+    lineHeight: 14,
+    fontWeight: '600',
+  },
+
+  underlined: {
+    fontSize: 18,
+    fontWeight: '800',
+    textDecorationLine: 'underline'
+  },
+
+  greyedSub:{
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#9D9D9D',
   },
 });
