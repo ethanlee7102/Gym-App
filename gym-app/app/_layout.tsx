@@ -38,6 +38,7 @@ export default function RootLayout() {
           options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
           />
           <Stack.Screen name="login" options={{ headerShown: false, animation: 'none' }}/>
+          <Stack.Screen name="index" options={{ headerShown: false, animation: 'none' }} />
         
         </Stack>
         <StatusBar style="auto" />

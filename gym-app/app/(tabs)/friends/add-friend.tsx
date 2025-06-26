@@ -8,6 +8,8 @@ import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Ionicons } from '@expo/vector-icons';
 import { sendFriendRequest, getSentFriendRequests } from '../../api/api';
+import axios from 'axios';
+
 
 
 // interface UserInfo {
@@ -30,7 +32,12 @@ export default function TabTwoScreen() {
             setUsername('');
             fetchSentRequests();
         }catch(e){
-            setError('Failed to send request');
+            if (axios.isAxiosError(e)) {
+                setError(e.response?.data?.error || 'An unknown error occurred.');
+            } 
+            else{
+                setError('An unknown error occurred.');
+            }
         }
     }   
     const fetchSentRequests = async () => {

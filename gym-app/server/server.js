@@ -96,6 +96,10 @@ app.post('/friends/request', async (req, res) => {
         if (recipient.friendRequestsReceived.includes(sender._id) || recipient.friends.includes(sender._id)) {
             return res.status(400).send({ error: 'Request already sent or already friends' });
         }
+
+        if (sender.friendRequestsReceived.includes(recipient._id)) {
+            return res.status(400).send({ error: 'User has already sent you a request' });
+        }
         
         sender.friendRequestsSent.push(recipient._id);
         recipient.friendRequestsReceived.push(sender._id);

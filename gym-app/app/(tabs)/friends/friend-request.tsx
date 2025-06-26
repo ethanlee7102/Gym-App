@@ -8,30 +8,33 @@ import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Ionicons } from '@expo/vector-icons';
 import { acceptFriendRequest, getFriendRequests } from '../../api/api';
+import { useFriendRequests } from '@/context/acceptRequest-context';
 
 export default function TabTwoScreen() {
     
-    const [requests, setRequests] = useState<{ username: string }[]>([]);
-    useEffect(() => {
-        const fetchRequests = async () => {
-          try {
-            const res = await getFriendRequests(); 
-            setRequests(res.data.requests);
-          } catch (e) {
-            console.error("Failed to fetch requests", e);
-          }
-        };
-        fetchRequests();
-      }, []);
+    // const [requests, setRequests] = useState<{ username: string }[]>([]);
+    // useEffect(() => {
+    //     const fetchRequests = async () => {
+    //       try {
+    //         const res = await getFriendRequests(); 
+    //         setRequests(res.data.requests);
+    //       } catch (e) {
+    //         console.error("Failed to fetch requests", e);
+    //       }
+    //     };
+    //     fetchRequests();
+    //   }, []);
 
-    const acceptRequest = async (username: string) => {
-    try {
-        await acceptFriendRequest(username);
-        setRequests(prev => prev.filter(r => r.username !== username));
-    } catch (e) {
-        console.error("Failed to accept request", e);
-    }
-    };
+    // const acceptRequest = async (username: string) => {
+    // try {
+    //     await acceptFriendRequest(username);
+    //     setRequests(prev => prev.filter(r => r.username !== username));
+    // } catch (e) {
+    //     console.error("Failed to accept request", e);
+    // }
+    // };
+
+    const { requests, loading, acceptRequest } = useFriendRequests();
     return (
         
         <ParallaxScrollView>
