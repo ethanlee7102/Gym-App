@@ -82,6 +82,9 @@ export default function TabTwoScreen() {
                
                 <ThemedView style={{ marginTop: 20 }}>
                     <ThemedText type="subtitle">Sent Requests</ThemedText>
+                    {sentRequests.length === 0 && (
+                        <ThemedText style={{ color: 'gray', marginTop: 10 }}>No pending requests</ThemedText>
+                    )}
                     {sentRequests.map((req, idx) => (
                     <ThemedText key={idx} style={{ color: 'white', marginTop: 5 }}>
                         {req.username}
