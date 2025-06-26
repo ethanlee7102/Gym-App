@@ -1,10 +1,12 @@
-import { StyleSheet, Image, Platform } from 'react-native';
-
+import { StyleSheet, Image, Platform, View, TextInput, Button, Alert  } from 'react-native';
+import React, { useState, useContext } from 'react';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import * as ImagePicker from 'expo-image-picker';
+import { useUser } from '@/context/user-context';
 
 export default function TabTwoScreen() {
   return (

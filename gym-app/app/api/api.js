@@ -42,4 +42,4 @@ export const getSentFriendRequests = async () => {
     return axios.get(`${API_BASE}/friends/sentRequests`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-  };
+};

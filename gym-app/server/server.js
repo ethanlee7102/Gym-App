@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const AWS = require('aws-sdk');
+const multerS3 = require('multer-s3');
 require('dotenv').config()
 
 const app = express();
@@ -21,14 +24,38 @@ const UserSchema = new mongoose.Schema({
     friendRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
+const PostSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    caption: { type: String },
+    imageUrl: { type: String },
+    createdAt: { type: Date, default: Date.now }
+});
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION
+});
+
+const upload = multer({
+  storage: multerS3({
+    s3,
+    bucket: process.env.S3_BUCKET_NAME,
+    acl: 'public-read',
+    metadata: (req, file, cb) => cb(null, { fieldName: file.fieldname }),
+    key: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
+  })
+});
+
+
 const User = mongoose.model('User', UserSchema);
+const Post = mongoose.model('Post', PostSchema);
 
 app.post("/login", async(req,res) => {
     const {username, password} = req.body;
     const user = await User.findOne({username});
 
     if (user && await bcrypt.compare(password, user.passwordHash)){
-        // const token = jwt.sign({ username }, SECRET);
         const token = jwt.sign({ id: user._id }, SECRET);
         res.send({ token });
     }
@@ -57,8 +84,6 @@ app.get('/me', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).send({ error: 'Unauthorized' });
     try{
-        // const { username } = jwt.verify(token, SECRET);
-        // const user = await User.findOne({ username }).populate('friends', 'username');
         const { id } = jwt.verify(token, SECRET);
         const user = await User.findById(id).populate('friends', 'username');
         if (!user) {
@@ -67,7 +92,8 @@ app.get('/me', async (req, res) => {
         }
         res.send({
             username: user.username,
-            friends: user.friends
+            friends: user.friends,
+            userId: user.id
         });
     } catch(e){
         return res.status(403).send({ error: 'Invalid token' });
@@ -178,7 +204,20 @@ app.get('/friends/sentRequests', async (req, res) => {
     }
 });
 
-
+app.post('/posts', upload.single('image'), async (req, res) => {
+    try {
+      const { caption, userId } = req.body;
+      const imageUrl = req.file.location;
+  
+      const newPost = new Post({ userId, caption, imageUrl });
+      await newPost.save();
+  
+      res.status(201).json(newPost);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Post upload failed.' });
+    }
+  });
 
 app.use((req, res) => {
     res.status(404).send({ error: 'Not found', path: req.originalUrl });
