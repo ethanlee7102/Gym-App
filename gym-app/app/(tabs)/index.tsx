@@ -11,7 +11,10 @@ import { getMe } from '../api/api';
 export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
-
+    const logout = async () => {
+      await AsyncStorage.removeItem('token');
+      router.replace('../login');
+  };
   useEffect(() => {
     const checkToken = async () => { //this checks if there is a token (already logged in)
       const token = await AsyncStorage.getItem('token');
@@ -47,6 +50,9 @@ export default function HomeScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Home</ThemedText>
       </ThemedView>
+      <Pressable onPress={logout}>
+                <ThemedText>Logout</ThemedText>
+            </Pressable>
      
     </ParallaxScrollView>
         

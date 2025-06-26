@@ -1,5 +1,5 @@
 import { StyleSheet, Image, Platform, Pressable, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -9,10 +9,16 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Ionicons } from '@expo/vector-icons';
 import { sendFriendRequest, getSentFriendRequests } from '../../api/api';
 
+// interface UserInfo {
+//     sentRequests: { username: string }[];
+// }
+
 export default function TabTwoScreen() {
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [sentRequests, setSentRequests] = useState<{ username: string }[]>([]);
+    
 
     const sendRequest = async () => {
         setError('');
@@ -25,6 +31,21 @@ export default function TabTwoScreen() {
             setError('Failed to send request');
         }
     }
+
+    useEffect(() => {
+        const fetchSentRequests = async () => {
+          try {
+            const res = await getSentFriendRequests();
+            setSentRequests(res.data.sentRequests);
+          } catch (e) {
+            console.error('Failed to fetch sent requests', e);
+          }
+        };
+      
+        fetchSentRequests();
+      }, []);
+
+    
     return (
 
         <ParallaxScrollView>
@@ -58,6 +79,16 @@ export default function TabTwoScreen() {
                 {error ? <ThemedText style={{ color: 'red' }}>{error}</ThemedText> : null}
                 {success ? <ThemedText style={{ color: 'green' }}>{success}</ThemedText> : null}    
 
+               
+                <ThemedView style={{ marginTop: 20 }}>
+                    <ThemedText type="subtitle">Sent Requests</ThemedText>
+                    {sentRequests.map((req, idx) => (
+                    <ThemedText key={idx} style={{ color: 'white', marginTop: 5 }}>
+                        {req.username}
+                    </ThemedText>
+                    ))}
+                </ThemedView>
+               
             </ThemedView>
         </ParallaxScrollView>
 
