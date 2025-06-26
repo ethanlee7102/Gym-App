@@ -39,7 +39,7 @@ export default function TabTwoScreen() {
     // if (!userInfo) {
     //     return <Text style={{ color: 'white' }}>Loading...</Text>;
     // }
-    if (loading) return <Text style={{ color: 'white' }}>Loading...</Text>;
+    if (loading) return <ThemedText style={{ color: 'white' }}>Loading...</ThemedText>;
     return (
         <ParallaxScrollView>
             <ThemedView style={styles.profileContainer}>

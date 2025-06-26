@@ -8,6 +8,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { getMe } from '../../api/api';
+import { useUser } from '@/context/user-context';
 
 interface UserInfo {
   username: string;
@@ -22,18 +23,20 @@ const screenWidth = Dimensions.get('window').width;
 
 export default function TabTwoScreen() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const res = await getMe();
-        setUserInfo(res.data);
-      } catch (e) {
-        console.error('Failed to load user info', e);
-      }
-    };
+  const { user, loading } = useUser();
+  // useEffect(() => {
+  //   const fetchUserInfo = async () => {
+  //     try {
+  //       const res = await getMe();
+  //       setUserInfo(res.data);
+  //     } catch (e) {
+  //       console.error('Failed to load user info', e);
+  //     }
+  //   };
   
-    fetchUserInfo();
-  }, []);
+  //   fetchUserInfo();
+  // }, []);
+  if (loading) return <ThemedText style={{ color: 'white' }}>Loading...</ThemedText>;
   return (
     <ParallaxScrollView>
       <ThemedView style={styles.titleContainer}>
@@ -43,10 +46,10 @@ export default function TabTwoScreen() {
             </Pressable>
       </ThemedView>
 
-      {userInfo?.friends?.length ? (
+      {user?.friends?.length ? (
     <ThemedView style={{ marginTop: 20 }}>
       
-      {userInfo.friends.map((friend, idx) => (
+      {user.friends.map((friend, idx) => (
         <ThemedText key={idx} style={{ color: 'white', marginTop: 5 }}>
           {friend.username}
         </ThemedText>

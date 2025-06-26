@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { acceptFriendRequest, getFriendRequests } from '../../api/api';
 
 export default function TabTwoScreen() {
-
+    
     const [requests, setRequests] = useState<{ username: string }[]>([]);
     useEffect(() => {
         const fetchRequests = async () => {

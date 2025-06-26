@@ -9,6 +9,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Ionicons } from '@expo/vector-icons';
 import { sendFriendRequest, getSentFriendRequests } from '../../api/api';
 
+
 // interface UserInfo {
 //     sentRequests: { username: string }[];
 // }
@@ -27,20 +28,21 @@ export default function TabTwoScreen() {
             const sendRequestRes = await sendFriendRequest(username.trim());
             setSuccess(`Friend request sent to ${username}`);
             setUsername('');
+            fetchSentRequests();
         }catch(e){
             setError('Failed to send request');
         }
-    }
-
+    }   
+    const fetchSentRequests = async () => {
+        try {
+          const res = await getSentFriendRequests();
+          setSentRequests(res.data.sentRequests);
+        } catch (e) {
+          console.error('Failed to fetch sent requests', e);
+        }
+      };
     useEffect(() => {
-        const fetchSentRequests = async () => {
-          try {
-            const res = await getSentFriendRequests();
-            setSentRequests(res.data.sentRequests);
-          } catch (e) {
-            console.error('Failed to fetch sent requests', e);
-          }
-        };
+        
       
         fetchSentRequests();
       }, []);
