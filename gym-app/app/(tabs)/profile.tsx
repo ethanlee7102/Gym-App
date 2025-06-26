@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { getMe } from '../api/api';
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
+import { useUser } from '@/context/user-context';
 
 
 interface UserInfo {
@@ -20,29 +21,31 @@ const screenWidth = Dimensions.get('window').width;
 
 export default function TabTwoScreen() {
     const screenWidth = Dimensions.get('window').width;
-    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+    // const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+    const { user, loading } = useUser();
 
     const logout = async () => {
         await AsyncStorage.removeItem('token');
-        router.replace('../login');
+        router.replace('../../login');
     };
 
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            const res = await getMe();
-            setUserInfo(res.data);
-        }
-        fetchUserInfo();
-    })
-    if (!userInfo) {
-        return <Text style={{ color: 'white' }}>Loading...</Text>;
-    }
+    // useEffect(() => {
+    //     const fetchUserInfo = async () => {
+    //         const res = await getMe();
+    //         setUserInfo(res.data);
+    //     }
+    //     fetchUserInfo();
+    // })
+    // if (!userInfo) {
+    //     return <Text style={{ color: 'white' }}>Loading...</Text>;
+    // }
+    if (loading) return <Text style={{ color: 'white' }}>Loading...</Text>;
     return (
         <ParallaxScrollView>
             <ThemedView style={styles.profileContainer}>
                 <Ionicons name="add-circle" size={98} color="#D9D9D9" style={{ marginLeft: screenWidth * -0.03 }}></Ionicons>
                 <ThemedView style={styles.unContainer}>
-                    <ThemedText type="subtitle">{userInfo.username}</ThemedText>
+                    <ThemedText type="subtitle">{user?.username}</ThemedText>
                     <ThemedText type="greyed">Custom Title (edit)</ThemedText>
 
                 </ThemedView>

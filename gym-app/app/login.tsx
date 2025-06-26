@@ -8,18 +8,21 @@ import NoTabSV from '@/components/NoTabSV';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Image } from 'react-native';
+import { useUser } from '@/context/user-context';
 
 export default function Login() {
     const router = useRouter();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const { refetchUser } = useUser();
 
     const handleLogin = async () => {
         try{
             const logRes = await login(username, password);
             await AsyncStorage.setItem('token', logRes.data.token);
-            router.replace('/');
+            await refetchUser();
+            router.replace('/(tabs)/home');
         }catch(e){
             setError("Login Failed")
         }

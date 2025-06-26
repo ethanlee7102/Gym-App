@@ -6,7 +6,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getMe } from '../api/api';
+import { getMe } from '../../api/api';
 
 export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
