@@ -3,10 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
-const AWS = require('aws-sdk');
-const multerS3 = require('multer-s3');
 require('dotenv').config()
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const app = express();
 const SECRET = process.env.JWT_SECRET;
@@ -31,20 +30,12 @@ const PostSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION
-});
-
-const upload = multer({
-  storage: multerS3({
-    s3,
-    bucket: process.env.S3_BUCKET_NAME,
-    acl: 'public-read',
-    metadata: (req, file, cb) => cb(null, { fieldName: file.fieldname }),
-    key: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
-  })
+const s3Client = new S3Client({
+    region: process.env.AWS_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    },
 });
 
 
@@ -204,20 +195,37 @@ app.get('/friends/sentRequests', async (req, res) => {
     }
 });
 
-app.post('/posts', upload.single('image'), async (req, res) => {
+app.get('/api/upload-url', async (req, res) => {
     try {
-      const { caption, userId } = req.body;
-      const imageUrl = req.file.location;
-  
+        const filename = `${Date.now()}-photo.jpg`;
+        const s3Params = {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: filename,
+            ContentType: 'image/jpeg',
+        };
+        const command = new PutObjectCommand(s3Params);
+    
+        const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
+        const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Params.Key}`;
+    
+        res.send({ uploadUrl, imageUrl });
+    } catch (e) {
+        console.error('Failed to generate signed URL:', e);
+        res.status(500).send({ error: 'Could not generate signed URL' });
+    }
+});
+
+app.post('/api/posts', async (req, res) => {
+    try {
+      const { caption, userId, imageUrl } = req.body;
       const newPost = new Post({ userId, caption, imageUrl });
       await newPost.save();
-  
       res.status(201).json(newPost);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'Post upload failed.' });
+      res.status(500).json({ error: 'Post creation failed.' });
     }
-  });
+});
 
 app.use((req, res) => {
     res.status(404).send({ error: 'Not found', path: req.originalUrl });

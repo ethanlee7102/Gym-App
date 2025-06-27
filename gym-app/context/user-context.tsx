@@ -4,6 +4,7 @@ import { getMe } from '@/app/api/api';
 interface User  {
     username: string;
     friends: Friend[];
+    userId: string;
   // add more fields l8er
 };
 interface Friend {
