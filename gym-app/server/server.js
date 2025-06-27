@@ -227,6 +227,27 @@ app.post('/api/posts', async (req, res) => {
     }
 });
 
+app.get('/feed', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token){
+        return res.status(401).send({ error: 'Unauthorized' });
+    } 
+
+    try {
+        const { id } = jwt.verify(token, SECRET);
+        const user = await User.findById(id).populate('friends');
+
+        const posts = await Post.find({ userId: { $in: user.friends } })
+            .populate('userId', 'username') 
+            .sort({ createdAt: -1 }); 
+
+        res.send({ posts });
+    } catch (e) {
+        res.status(500).send({ error: 'Failed to load feed' });
+    }
+});
+
+
 app.use((req, res) => {
     res.status(404).send({ error: 'Not found', path: req.originalUrl });
 });

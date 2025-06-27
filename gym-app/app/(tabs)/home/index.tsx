@@ -6,11 +6,23 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getMe } from '../../api/api';
+import { getFeed } from '../../api/api';
+import { useUser } from '@/context/user-context';
+
+interface Post  {
+    userId: {
+      username: string;
+    };
+    caption: string;
+    imageUrl: string;
+    createdAt: string;
+  };
 
 export default function HomeScreen() {
-    const [loading, setLoading] = useState(true);
-    const [userInfo, setUserInfo] = useState(null);
+
+    
+    const [loggingin, setLoading] = useState(true);
+    const [feedPosts, setFeedPosts] = useState<Post[]>([]);
     const logout = async () => {
         await AsyncStorage.removeItem('token');
         router.replace('../login');
@@ -27,15 +39,21 @@ export default function HomeScreen() {
         checkToken();
     }, []);
 
+    
+
+    const { user, loading } = useUser();
+
     useEffect(() => {
-        const fetchUserInfo = async () => {
-            const res = await getMe();
-            setUserInfo(res.data);
-        }
-    })
+        const fetchFeed = async () => {
+            const res = await getFeed();
+            if (res.data.posts) setFeedPosts(res.data.posts);
+        };
+
+        fetchFeed();
+    }, []);
 
 
-    if (loading) {
+    if (loggingin) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" />
@@ -55,6 +73,14 @@ export default function HomeScreen() {
                 </Pressable>
                 <Pressable onPress={() => router.push('/(tabs)/home/add-post')}>
                 <ThemedText>post</ThemedText></Pressable>
+
+                {feedPosts.map((post, idx) => (
+                    <View key={idx} style={{ marginBottom: 20 }}>
+                        <ThemedText style={{ fontWeight: 'bold' }}>{post.userId.username}</ThemedText>
+                        <Image source={{ uri: post.imageUrl }} style={{ width: '100%', height: 200, borderRadius: 10 }} />
+                        <ThemedText>{post.caption}</ThemedText>
+                    </View>
+                ))}
 
             </ParallaxScrollView>
 

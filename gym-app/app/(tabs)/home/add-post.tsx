@@ -95,7 +95,7 @@ export default function AddPostScreen() {
           placeholder="Enter caption"
           value={caption}
           onChangeText={setCaption}
-          style={styles.input}
+          style={[styles.input, styles.textInput]}
         />
         <Button title="Post" onPress={handlePost} />
       </ThemedView>
@@ -129,5 +129,10 @@ const styles = StyleSheet.create({
     borderWidth: 1, 
     padding: 10, 
     marginBottom: 10 
+  },
+  textInput: {
+    color: 'white', 
+    fontSize: 16,
+    fontFamily: 'System', 
   }
 });
