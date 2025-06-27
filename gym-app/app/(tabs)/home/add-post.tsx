@@ -39,6 +39,24 @@ export default function AddPostScreen() {
     }
   };
 
+  const pickFromCamera = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert('Permission required', 'Please allow camera access.');
+      return;
+    }
+  
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: 'images',
+      allowsEditing: true,
+      quality: 1,
+    });
+  
+    if (!result.canceled) {
+      setImage(result.assets[0]);
+    }
+  };
+
   const handlePost = async () => {
     if (!image) {
       Alert.alert('No image selected', 'Please choose an image to post.');
@@ -90,6 +108,7 @@ export default function AddPostScreen() {
       </ThemedView>
       <ThemedView style={styles.container}>
         <Button title="Pick an image" onPress={pickImage} />
+        <Button title="Take a photo" onPress={pickFromCamera} />
         {image && <Image source={{ uri: image.uri }} style={styles.image} />}
         <TextInput
           placeholder="Enter caption"

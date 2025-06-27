@@ -30,6 +30,8 @@ const PostSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+PostSchema.index({ userId: 1, createdAt: -1 });
+
 const s3Client = new S3Client({
     region: process.env.AWS_REGION,
     credentials: {
