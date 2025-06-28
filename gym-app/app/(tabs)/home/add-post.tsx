@@ -10,6 +10,7 @@ import type { ImagePickerAsset } from 'expo-image-picker';
 import { getUploadUrl, createPost } from '../../api/api';
 import * as FileSystem from 'expo-file-system';
 import { Buffer } from 'buffer';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 import { useUser } from '@/context/user-context';
 
@@ -19,6 +20,8 @@ export default function AddPostScreen() {
   const { user } = useUser();
   const [caption, setCaption] = useState('');
   const [image, setImage] = useState<ImagePickerAsset | null>(null);
+  const [uploading, setUploading] = useState(false);
+  
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -35,7 +38,14 @@ export default function AddPostScreen() {
     
 
     if (!result.canceled) {
-      setImage(result.assets[0]);
+      const original = result.assets[0];
+      const compressed = await ImageManipulator.manipulateAsync(
+        original.uri,
+        [{ resize: { width: 1080 } }],
+        { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+      );
+
+      setImage({...original, uri: compressed.uri,});
     }
   };
 
@@ -53,9 +63,30 @@ export default function AddPostScreen() {
     });
   
     if (!result.canceled) {
-      setImage(result.assets[0]);
+      const original = result.assets[0];
+      const compressed = await ImageManipulator.manipulateAsync(
+        original.uri,
+        [{ resize: { width: 1080 } }],
+        { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+      );
+
+      setImage({...original, uri: compressed.uri,});
     }
   };
+
+  const compressImage = async (uri: string) => {
+    const result = await ImageManipulator.manipulateAsync(
+      uri,
+      [{ resize: { width: 1080 } }],
+      {
+        compress: 0.7,
+        format: ImageManipulator.SaveFormat.JPEG,
+      }
+    );
+    return result.uri;
+  };
+  
+  
 
   const handlePost = async () => {
     if (!image) {
@@ -67,16 +98,17 @@ export default function AddPostScreen() {
       Alert.alert('Error', 'User ID missing.');
       return;
     }
-  
+    setUploading(true);
     try {
       const { data } = await getUploadUrl();
       const { uploadUrl, imageUrl } = data;
+ 
 
       // ✅ Get file as blob
       const response = await fetch(image.uri);
       const blob = await response.blob();
-      console.log('blob type:', blob.type);
-      console.log('blob size:', blob.size);
+      // console.log('blob type:', blob.type);
+      // console.log('blob size:', blob.size);
       // ✅ Upload blob to S3
       const uploadRes = await fetch(uploadUrl, {
         method: 'PUT',
@@ -85,9 +117,9 @@ export default function AddPostScreen() {
         },
         body: blob
       });
-      console.log('uploadUrl:', uploadUrl);
-      console.log('uploadRes.status:', uploadRes.status);
-      console.log('uploadRes.text():', await uploadRes.text());
+      // console.log('uploadUrl:', uploadUrl);
+      // console.log('uploadRes.status:', uploadRes.status);
+      // console.log('uploadRes.text():', await uploadRes.text());
 
       if (!uploadRes.ok) throw new Error('Failed to upload to S3');
 
@@ -98,6 +130,8 @@ export default function AddPostScreen() {
     } catch (err) {
       console.error(err);
       Alert.alert('Error', 'Post upload failed.');
+    }finally {
+      setUploading(false);
     }
   };
   
@@ -116,7 +150,7 @@ export default function AddPostScreen() {
           onChangeText={setCaption}
           style={[styles.input, styles.textInput]}
         />
-        <Button title="Post" onPress={handlePost} />
+        <Button title="Post" onPress={handlePost} disabled={uploading}/>
       </ThemedView>
     </ParallaxScrollView>
   );

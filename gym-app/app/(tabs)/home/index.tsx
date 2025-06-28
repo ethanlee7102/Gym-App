@@ -1,5 +1,5 @@
 import { Pressable, Image, StyleSheet, Platform, Text, View, ActivityIndicator, FlatList } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import { router } from 'expo-router';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -27,6 +27,8 @@ export default function HomeScreen() {
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const PAGE_SIZE = 4;
+    const fetchingRef = useRef(false);
+    const scrollCooldownRef = useRef<number | null>(null);
     
     
     useEffect(() => {
@@ -46,8 +48,8 @@ export default function HomeScreen() {
     const { user, loading } = useUser();
 
     const fetchFeed = async () => {
-        if (loadingMore || !hasMore) return;
-        setLoadingMore(true);
+        if (fetchingRef.current || !hasMore) return;
+        fetchingRef.current = true; 
 
         try {
             const res = await getFeed(page, PAGE_SIZE);
@@ -59,7 +61,7 @@ export default function HomeScreen() {
         } catch (e) {
             console.error('Failed to load posts', e);
         } finally {
-            setLoadingMore(false);
+            fetchingRef.current = false;
         }
     };
 
@@ -79,6 +81,8 @@ export default function HomeScreen() {
         );
     }
 
+    if (loading) return <ThemedText>Loading...</ThemedText>;
+
     return (
         <ThemedView style={styles.container}>
             <ParallaxScrollView onScroll={({ nativeEvent }) => {
@@ -86,8 +90,13 @@ export default function HomeScreen() {
                 const isNearBottom =
                 layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
 
-                if (isNearBottom) {
-                fetchFeed(); 
+                if (isNearBottom && !scrollCooldownRef.current) {
+                    fetchFeed();
+              
+                    
+                    scrollCooldownRef.current = setTimeout(() => {
+                      scrollCooldownRef.current = null;
+                    }, 200);
                 }
             }}
             scrollEventThrottle={16}>

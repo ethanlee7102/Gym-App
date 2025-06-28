@@ -21,7 +21,6 @@ const screenWidth = Dimensions.get('window').width;
 
 export default function TabTwoScreen() {
     const screenWidth = Dimensions.get('window').width;
-    // const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const { user, loading } = useUser();
 
     const logout = async () => {
@@ -29,16 +28,6 @@ export default function TabTwoScreen() {
         router.replace('../../login');
     };
 
-    // useEffect(() => {
-    //     const fetchUserInfo = async () => {
-    //         const res = await getMe();
-    //         setUserInfo(res.data);
-    //     }
-    //     fetchUserInfo();
-    // })
-    // if (!userInfo) {
-    //     return <Text style={{ color: 'white' }}>Loading...</Text>;
-    // }
     if (loading) return <ThemedText style={{ color: 'white' }}>Loading...</ThemedText>;
     return (
         <ParallaxScrollView>
