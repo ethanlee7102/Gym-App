@@ -1,4 +1,4 @@
-import { Pressable, Image, StyleSheet, Platform, Text, View, ActivityIndicator } from 'react-native';
+import { Pressable, Image, StyleSheet, Platform, Text, View, ActivityIndicator, FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { router } from 'expo-router';
@@ -23,10 +23,12 @@ export default function HomeScreen() {
     
     const [loggingin, setLoading] = useState(true);
     const [feedPosts, setFeedPosts] = useState<Post[]>([]);
-    const logout = async () => {
-        await AsyncStorage.removeItem('token');
-        router.replace('../login');
-    };
+    const [page, setPage] = useState(1);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const PAGE_SIZE = 4;
+    
+    
     useEffect(() => {
         const checkToken = async () => { //this checks if there is a token (already logged in)
             const token = await AsyncStorage.getItem('token');
@@ -43,11 +45,26 @@ export default function HomeScreen() {
 
     const { user, loading } = useUser();
 
+    const fetchFeed = async () => {
+        if (loadingMore || !hasMore) return;
+        setLoadingMore(true);
+
+        try {
+            const res = await getFeed(page, PAGE_SIZE);
+            const newPosts = res.data.posts;
+
+            setFeedPosts(prev => [...prev, ...newPosts]);
+            setPage(prev => prev + 1);
+            if (newPosts.length < PAGE_SIZE) setHasMore(false);
+        } catch (e) {
+            console.error('Failed to load posts', e);
+        } finally {
+            setLoadingMore(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchFeed = async () => {
-            const res = await getFeed();
-            if (res.data.posts) setFeedPosts(res.data.posts);
-        };
+        
 
         fetchFeed();
     }, []);
@@ -64,13 +81,19 @@ export default function HomeScreen() {
 
     return (
         <ThemedView style={styles.container}>
-            <ParallaxScrollView>
+            <ParallaxScrollView onScroll={({ nativeEvent }) => {
+                const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+                const isNearBottom =
+                layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
+
+                if (isNearBottom) {
+                fetchFeed(); 
+                }
+            }}
+            scrollEventThrottle={16}>
                 <ThemedView style={styles.titleContainer}>
                     <ThemedText type="title">Home</ThemedText>
                 </ThemedView>
-                <Pressable onPress={logout}>
-                    <ThemedText>Logout</ThemedText>
-                </Pressable>
                 <Pressable onPress={() => router.push('/(tabs)/home/add-post')}>
                 <ThemedText>post</ThemedText></Pressable>
 

@@ -20,7 +20,15 @@ const UserSchema = new mongoose.Schema({
     passwordHash: String,
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     friendRequestsSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    friendRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    friendRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    level: { type: Number, default: 1 },
+    streak: { type: Number, default: 0 },
+    title: { type: String, default: 'Rookie' },
+    personalRecords: {
+        squat: { type: Number, default: 0 },
+        bench: { type: Number, default: 0 },
+        deadlift: { type: Number, default: 0 },
+    }
 });
 
 const PostSchema = new mongoose.Schema({
@@ -86,7 +94,10 @@ app.get('/me', async (req, res) => {
         res.send({
             username: user.username,
             friends: user.friends,
-            userId: user.id
+            userId: user.id,
+            level: user.level,
+            streak: user.streak,
+            title: user.title,
         });
     } catch(e){
         return res.status(403).send({ error: 'Invalid token' });
@@ -234,6 +245,9 @@ app.get('/feed', async (req, res) => {
     if (!token){
         return res.status(401).send({ error: 'Unauthorized' });
     } 
+    const page = parseInt(req.query.page || '1');
+    const limit = parseInt(req.query.limit || '10');
+    const skip = (page - 1) * limit;
 
     try {
         const { id } = jwt.verify(token, SECRET);
@@ -241,7 +255,9 @@ app.get('/feed', async (req, res) => {
 
         const posts = await Post.find({ userId: { $in: user.friends } })
             .populate('userId', 'username') 
-            .sort({ createdAt: -1 }); 
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
         res.send({ posts });
     } catch (e) {

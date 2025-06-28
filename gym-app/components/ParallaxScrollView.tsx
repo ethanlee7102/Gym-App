@@ -1,13 +1,13 @@
 import type { PropsWithChildren } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollViewProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { ThemedView } from '@/components/ThemedView';
 import { useBottomTabOverflow } from '@/components/ui/TabBarBackground';
 
-type Props = PropsWithChildren<{}>;
+type Props = PropsWithChildren<ScrollViewProps>;
 
-export default function ParallaxScrollView({ children }: Props) {
+export default function ParallaxScrollView({ children, ...scrollProps }: Props) {
   const bottom = useBottomTabOverflow();
 
   return (
@@ -16,6 +16,7 @@ export default function ParallaxScrollView({ children }: Props) {
         scrollEventThrottle={16}
         scrollIndicatorInsets={{ bottom }}
         contentContainerStyle={[styles.content, { paddingBottom: bottom }]}
+        {...scrollProps}
       >
         {children}
       </Animated.ScrollView>

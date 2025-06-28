@@ -63,9 +63,10 @@ export const createPost = async (caption, imageUrl, userId) => {
     });
 };
 
-export const getFeed = async () => {
+export const getFeed = async (page = 1, limit = 10) => {
     const token = await AsyncStorage.getItem('token');
     return axios.get(`${API_BASE}/feed`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        params: { page, limit },
     });
 };
