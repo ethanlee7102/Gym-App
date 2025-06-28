@@ -4,6 +4,11 @@ import { getMe } from '@/app/api/api';
 interface User  {
     username: string;
     friends: Friend[];
+    userId: string;
+    level: number;
+    streak: number;
+    title: string;
+    quizComplete: boolean;
   // add more fields l8er
 };
 interface Friend {
@@ -14,13 +19,13 @@ interface Friend {
 type UserContextType = {
     user: User | null;
     loading: boolean;
-    refetchUser: () => Promise<void>;
+    refetchUser: () => Promise<User | null>;
 };
 
 const UserContext = createContext<UserContextType>({
     user: null,
     loading: true,
-    refetchUser: async () => {}, // default no-op
+    refetchUser: async () => null, // default no-op
 });
 
 type Props = {
@@ -36,9 +41,11 @@ export const UserProvider = ({ children }: Props) => {
         try {
         const res = await getMe();
         setUser(res.data);
+        return res.data;
         } catch (e) {
         console.error('User fetch failed', e);
         setUser(null);
+        return null;
         } finally {
         setLoading(false);
         }

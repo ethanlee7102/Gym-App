@@ -16,13 +16,21 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { refetchUser } = useUser();
+    const { user, loading } = useUser();
 
     const handleLogin = async () => {
         try{
             const logRes = await login(username, password);
             await AsyncStorage.setItem('token', logRes.data.token);
-            await refetchUser();
-            router.replace('/(tabs)/home');
+            const updatedUser = await refetchUser();
+            
+
+            if (updatedUser?.quizComplete) {
+                router.replace('/(tabs)/home');
+              } else {
+                router.replace('/quiz/quiz1');
+                console.log("went to quiz!");
+              }
         }catch(e){
             setError("Login Failed")
         }

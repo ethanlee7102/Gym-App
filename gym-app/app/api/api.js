@@ -43,3 +43,30 @@ export const getSentFriendRequests = async () => {
       headers: { Authorization: `Bearer ${token}` }
     });
 };
+
+export const getUploadUrl = async () => {
+    const token = await AsyncStorage.getItem('token');
+    return axios.get(`${API_BASE}/api/upload-url`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  };
+  
+
+export const createPost = async (caption, imageUrl, userId) => {
+    const token = await AsyncStorage.getItem('token');
+    return axios.post(`${API_BASE}/api/posts`, {
+        caption,
+        imageUrl,
+        userId
+    }, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+};
+
+export const getFeed = async (page = 1, limit = 10) => {
+    const token = await AsyncStorage.getItem('token');
+    return axios.get(`${API_BASE}/feed`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { page, limit },
+    });
+};

@@ -39,6 +39,7 @@ export default function RootLayout() {
           />
           <Stack.Screen name="login" options={{ headerShown: false, animation: 'none' }}/>
           <Stack.Screen name="index" options={{ headerShown: false, animation: 'none' }} />
+          <Stack.Screen name="quiz/quiz1" options={{ headerShown: false, animation: 'none' }} />
         
         </Stack>
         <StatusBar style="auto" />
