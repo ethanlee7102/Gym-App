@@ -120,7 +120,10 @@ export default function AddPostScreen() {
       // console.log('uploadUrl:', uploadUrl);
       // console.log('uploadRes.status:', uploadRes.status);
       // console.log('uploadRes.text():', await uploadRes.text());
-
+      if (!uploadRes.ok){
+  const text = await uploadRes.text();
+  throw new Error(`Failed to upload to S3: ${uploadRes.status} - ${text}`);
+}
       if (!uploadRes.ok) throw new Error('Failed to upload to S3');
 
       await createPost(caption, imageUrl, user.userId);
