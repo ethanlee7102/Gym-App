@@ -1,9 +1,15 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
+type PersonalRecords = {
+  squat: number;
+  bench: number;
+  deadlift: number;
+};
+
 type QuizData = {
-  gender?: string;
-  weight?: number;
-  pr?: { bench?: number; squat?: number; deadlift?: number };
+  gender: 'male' | 'female' | 'other';
+  weight: number;
+  personalRecords: PersonalRecords;
 };
 
 type QuizContextType = {
@@ -15,11 +21,23 @@ type Props = {
   children: ReactNode;
 };
 
-const QuizContext = createContext<QuizContextType>({ 
-    quiz: {}, setQuiz: () => {} });
+const defaultQuiz: QuizData = {
+  gender: 'other',
+  weight: 0,
+  personalRecords: {
+    squat: 0,
+    bench: 0,
+    deadlift: 0,
+  },
+};
+
+const QuizContext = createContext<QuizContextType>({
+  quiz: defaultQuiz,
+  setQuiz: () => {},
+});
 
 export const QuizProvider = ( { children }: Props ) => {
-  const [quiz, setQuiz] = useState<QuizData>({});
+  const [quiz, setQuiz] = useState<QuizData>(defaultQuiz);
   return (
     <QuizContext.Provider value={{ quiz, setQuiz }}>
       {children}

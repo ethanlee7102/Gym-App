@@ -8,9 +8,11 @@ export default function QuizLayout() {
     return (
         <QuizProvider>
             <Stack screenOptions={{ headerShown: false }} >
-        
+
+                    <Stack.Screen name="index" options={{ animation: 'none' }} />
                     <Stack.Screen name="quiz1" options={{ animation: 'none' }} />
                     <Stack.Screen name="quiz2" options={{ animation: 'none' }} />
+                    <Stack.Screen name="quiz_sub" options={{ animation: 'none' }} />
 
             </Stack>
         </QuizProvider>

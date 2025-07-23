@@ -49,7 +49,7 @@ export const getUploadUrl = async () => {
     return axios.get(`${API_BASE}/api/upload-url`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-  };
+};
   
 
 export const createPost = async (caption, imageUrl, userId) => {
@@ -68,5 +68,12 @@ export const getFeed = async (page = 1, limit = 10) => {
     return axios.get(`${API_BASE}/feed`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { page, limit },
+    });
+};
+
+export const submitQuiz = async (quizData) => {
+    const token = await AsyncStorage.getItem('token');
+    return axios.post( `${API_BASE}/quiz/submit`, quizData,{
+            headers: { Authorization: `Bearer ${token}` },
     });
 };
