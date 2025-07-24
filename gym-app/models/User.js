@@ -19,6 +19,8 @@ const UserSchema = new mongoose.Schema({
     weight: { type: Number, default: null },
     quizComplete: { type: Boolean, default: false },
     profilePicture: { type: String },
+    dots: { type: Number, default: 0 },
+    DOTSrank: { type: String, enum: ['Unranked', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Elite', 'Freak', 'GOAT'], default: 'Unranked' },
 });
 
 module.exports = mongoose.model('User', UserSchema);

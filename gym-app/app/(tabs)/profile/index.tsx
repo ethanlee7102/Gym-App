@@ -149,6 +149,7 @@ export default function TabTwoScreen() {
             <ThemedText>Bench PR: {user?.personalRecords.bench}</ThemedText>
             <ThemedText>Squat PR: {user?.personalRecords.squat}</ThemedText>
             <ThemedText>Deadlift PR: {user?.personalRecords.deadlift}</ThemedText>
+            <ThemedText>Rank: {user?.DOTSrank}</ThemedText>
             <Pressable onPress={logout}>
                 <ThemedText>Logout</ThemedText>
             </Pressable>

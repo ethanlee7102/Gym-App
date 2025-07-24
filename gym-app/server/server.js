@@ -87,7 +87,8 @@ app.get('/me', async (req, res) => {
             gender: user.gender,
             weight: user.weight,
             personalRecords: user.personalRecords,
-            profilePicture: user.profilePicture
+            profilePicture: user.profilePicture,
+            DOTSrank: user.DOTSrank,
         });
     } catch(e){
         return res.status(403).send({ error: 'Invalid token' });
@@ -120,7 +121,7 @@ app.post('/api/profile-picture', async (req, res) => {
                 }));
                 // console.log(`Deleted old image: ${oldKey}`);
 
-                console.log('Delete response:', deleteRes);
+                
             } catch (deleteErr) {
                 console.warn('Failed to delete old image:', deleteErr.message);
             }

@@ -10,9 +10,11 @@ interface User  {
     title: string;
     quizComplete: boolean;
     weight: number | null;
-    gender: 'male' | 'female' | 'other' | null;
+    gender: 'Male' | 'Female' | 'other' | null;
     personalRecords: PersonalRecords;
     profilePicture: string;
+    dots: number;
+    DOTSrank: 'Unranked' | 'Iron' | 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Elite' | 'Freak' | 'GOAT';
     
   // add more fields l8er
 };
