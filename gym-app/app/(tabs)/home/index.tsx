@@ -1,4 +1,5 @@
-import { Pressable, Image, StyleSheet, Platform, Text, View, ActivityIndicator, FlatList } from 'react-native';
+import { Pressable, StyleSheet, Platform, Text, View, ActivityIndicator, FlatList } from 'react-native';
+import { Image } from 'expo-image';
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import { router } from 'expo-router';
@@ -8,27 +9,16 @@ import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFeed } from '../../api/api';
 import { useUser } from '@/context/user-context';
+import { useFeed } from '@/context/feed-context';
 
-interface Post  {
-    userId: {
-      username: string;
-    };
-    caption: string;
-    imageUrl: string;
-    createdAt: string;
-  };
 
 export default function HomeScreen() {
 
     
     const [loggingin, setLoading] = useState(true);
-    const [feedPosts, setFeedPosts] = useState<Post[]>([]);
-    const [page, setPage] = useState(1);
-    const [loadingMore, setLoadingMore] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
-    const PAGE_SIZE = 4;
-    const fetchingRef = useRef(false);
     const scrollCooldownRef = useRef<number | null>(null);
+    const { posts: feedPosts, loading: feedLoading, fetchMore, hasMore } = useFeed();
+    
     
     
     useEffect(() => {
@@ -47,29 +37,7 @@ export default function HomeScreen() {
 
     const { user, loading } = useUser();
 
-    const fetchFeed = async () => {
-        if (fetchingRef.current || !hasMore) return;
-        fetchingRef.current = true; 
-
-        try {
-            const res = await getFeed(page, PAGE_SIZE);
-            const newPosts = res.data.posts;
-
-            setFeedPosts(prev => [...prev, ...newPosts]);
-            setPage(prev => prev + 1);
-            if (newPosts.length < PAGE_SIZE) setHasMore(false);
-        } catch (e) {
-            console.error('Failed to load posts', e);
-        } finally {
-            fetchingRef.current = false;
-        }
-    };
-
-    useEffect(() => {
-        
-
-        fetchFeed();
-    }, []);
+    
 
 
     if (loggingin) {
@@ -91,12 +59,12 @@ export default function HomeScreen() {
                 layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
 
                 if (isNearBottom && !scrollCooldownRef.current) {
-                    fetchFeed();
+                    fetchMore();
               
                     
                     scrollCooldownRef.current = setTimeout(() => {
                       scrollCooldownRef.current = null;
-                    }, 200);
+                    }, 100);
                 }
             }}
             scrollEventThrottle={16}>
@@ -105,11 +73,23 @@ export default function HomeScreen() {
                 </ThemedView>
                 <Pressable onPress={() => router.push('/(tabs)/home/add-post')}>
                 <ThemedText>post</ThemedText></Pressable>
-
+            
                 {feedPosts.map((post, idx) => (
                     <View key={idx} style={{ marginBottom: 20 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
+                        <Image
+                            source={{ uri: post.userId.profilePicture }}
+                            style={{ width: 40, height: 40, borderRadius: 20, marginRight: 8 }}
+                        />
                         <ThemedText style={{ fontWeight: 'bold' }}>{post.userId.username}</ThemedText>
-                        <Image source={{ uri: post.imageUrl }} style={{ width: '100%', height: 200, borderRadius: 10 }} />
+                        </View>
+                        {/* <ThemedText style={{ fontWeight: 'bold' }}>{post.userId.username}</ThemedText> */}
+                        <Image 
+                            source={{ uri: post.imageUrl }} 
+                            style={{ width: '100%', height: 200, borderRadius: 10 }} 
+                            contentFit="cover"
+                            transition={200} 
+                        />
                         <ThemedText>{post.caption}</ThemedText>
                     </View>
                 ))}

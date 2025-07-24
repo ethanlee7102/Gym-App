@@ -21,6 +21,7 @@ interface User  {
 
 interface Friend {
     username: string;
+    profilePicture: string;
 };
 
 interface PersonalRecords {

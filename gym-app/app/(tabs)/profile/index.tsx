@@ -1,4 +1,5 @@
-import { StyleSheet, Image, Platform, Pressable, Text, Alert } from 'react-native';
+import { StyleSheet, Platform, Pressable, Text, Alert } from 'react-native';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -53,8 +54,8 @@ export default function TabTwoScreen() {
             const original = result.assets[0];
             const compressed = await ImageManipulator.manipulateAsync(
                 original.uri,
-                [{ resize: { width: 1080 } }],
-                { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+                [{ resize: { width: 200 } }],
+                { compress: 0.6, format: ImageManipulator.SaveFormat.JPEG }
             );
             const pickedImage = { ...original, uri: compressed.uri };
             setImage(pickedImage);

@@ -1,4 +1,5 @@
-import { StyleSheet, Image, Platform, Pressable } from 'react-native';
+import { StyleSheet, Platform, Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -24,18 +25,7 @@ const screenWidth = Dimensions.get('window').width;
 export default function TabTwoScreen() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { user, loading } = useUser();
-  // useEffect(() => {
-  //   const fetchUserInfo = async () => {
-  //     try {
-  //       const res = await getMe();
-  //       setUserInfo(res.data);
-  //     } catch (e) {
-  //       console.error('Failed to load user info', e);
-  //     }
-  //   };
-  
-  //   fetchUserInfo();
-  // }, []);
+
   if (loading) return <ThemedText style={{ color: 'white' }}>Loading...</ThemedText>;
   return (
     <ParallaxScrollView>
@@ -50,9 +40,17 @@ export default function TabTwoScreen() {
     <ThemedView style={{ marginTop: 20 }}>
       
       {user.friends.map((friend, idx) => (
-        <ThemedText key={idx} style={{ color: 'white', marginTop: 5 }}>
-          {friend.username}
-        </ThemedText>
+        <ThemedView key={idx} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+          <Image
+            source={{ uri: friend.profilePicture }}
+            style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }}
+          />
+          <ThemedText style={{ color: 'white' }}>{friend.username}</ThemedText>
+        </ThemedView>
+
+        // <ThemedText key={idx} style={{ color: 'white', marginTop: 5 }}>
+        //   {friend.username}
+        // </ThemedText>
       ))}
     </ThemedView>
       ) : (

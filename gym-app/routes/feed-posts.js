@@ -45,7 +45,7 @@ router.get('/feed', async (req, res) => {
         const user = await User.findById(id).populate('friends');
 
         const posts = await Post.find({ userId: { $in: user.friends } })
-            .populate('userId', 'username')
+            .populate('userId', 'username profilePicture')
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
