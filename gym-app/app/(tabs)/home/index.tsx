@@ -121,8 +121,8 @@ export default function HomeScreen() {
                 onPress={() => router.push('/stats')}
             >
                 <ThemedView style={styles.textWrapper}>
-                    <Text style={styles.buttonText}>Level: (lvl)</Text>
-                    <Text style={styles.buttonText2}>Title: (title goes here)</Text>
+                    <Text style={styles.buttonText}>Level: {user?.level}</Text>
+                    <Text style={styles.buttonText2}>Title: {user?.title}</Text>
                 </ThemedView>
                 <ThemedView style={styles.progressBarContainer}>
                     <ThemedView style={styles.progressBarFill} />
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     progressBarContainer: {
-        height: 6,
+        height: 7,
         left: 0,
         width: '100%',
         backgroundColor: '#555',

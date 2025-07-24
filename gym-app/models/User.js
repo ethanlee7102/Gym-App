@@ -15,9 +15,10 @@ const UserSchema = new mongoose.Schema({
         bench: { type: Number, default: 0 },
         deadlift: { type: Number, default: 0 },
     },
-    gender: { type: String, enum: ['male', 'female', 'other'], default: null },
+    gender: { type: String, enum: ['Male', 'Female', 'Other'], default: null },
     weight: { type: Number, default: null },
-    quizComplete: { type: Boolean, default: false }
+    quizComplete: { type: Boolean, default: false },
+    profilePicture: { type: String },
 });
 
 module.exports = mongoose.model('User', UserSchema);

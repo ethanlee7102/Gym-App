@@ -7,7 +7,7 @@ type PersonalRecords = {
 };
 
 type QuizData = {
-  gender: 'male' | 'female' | 'other';
+  gender: 'Male' | 'Female' | 'Other';
   weight: number;
   personalRecords: PersonalRecords;
 };
@@ -22,7 +22,7 @@ type Props = {
 };
 
 const defaultQuiz: QuizData = {
-  gender: 'other',
+  gender: 'Other',
   weight: 0,
   personalRecords: {
     squat: 0,

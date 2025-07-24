@@ -44,10 +44,11 @@ export const getSentFriendRequests = async () => {
     });
 };
 
-export const getUploadUrl = async () => {
+export const getUploadUrl = async (type) => {
     const token = await AsyncStorage.getItem('token');
     return axios.get(`${API_BASE}/api/upload-url`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      params: { type }
     });
 };
   
@@ -74,6 +75,16 @@ export const getFeed = async (page = 1, limit = 10) => {
 export const submitQuiz = async (quizData) => {
     const token = await AsyncStorage.getItem('token');
     return axios.post( `${API_BASE}/quiz/submit`, quizData,{
-            headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
+    });
+};
+
+export const updateProfilePicture = async (imageUrl) => {
+    const token = await AsyncStorage.getItem('token');
+    return axios.post(`${API_BASE}/api/profile-picture`, 
+        { imageUrl },
+        {
+        headers: { Authorization: `Bearer ${token}` }
+        
     });
 };

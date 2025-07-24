@@ -4,7 +4,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const app = express();
@@ -20,9 +20,11 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 const friendRoutes = require('../routes/friends');
 const postRoutes = require('../routes/feed-posts');
+const quizRoutes = require('../routes/quiz-submit')
 
 app.use('/', postRoutes);
 app.use('/', friendRoutes);
+app.use('/', quizRoutes);
 
 
 
@@ -82,9 +84,57 @@ app.get('/me', async (req, res) => {
             streak: user.streak,
             title: user.title,
             quizComplete: user.quizComplete,
+            gender: user.gender,
+            weight: user.weight,
+            personalRecords: user.personalRecords,
+            profilePicture: user.profilePicture
         });
     } catch(e){
         return res.status(403).send({ error: 'Invalid token' });
+    }
+});
+
+app.post('/api/profile-picture', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).send({ error: 'Unauthorized' });
+    try {
+        
+        const { id } = jwt.verify(token, process.env.JWT_SECRET);
+
+        const { imageUrl } = req.body;
+        // const user = await User.findByIdAndUpdate(id, { profilePicture: imageUrl }, { new: true });
+
+        // res.send({ success: true, user });
+
+        const user = await User.findById(id);
+        if (!user) return res.status(404).send({ error: 'User not found' });
+
+
+        if (user.profilePicture) {
+            const oldKey = user.profilePicture.split('/').pop();
+            console.log('oldkey:', oldKey);
+            try {
+                const deleteRes = await s3Client.send(new DeleteObjectCommand({
+                    Bucket: process.env.S3_BUCKET_NAME,
+                    Key: `profile-pic/${oldKey}`,
+                }));
+                // console.log(`Deleted old image: ${oldKey}`);
+
+                console.log('Delete response:', deleteRes);
+            } catch (deleteErr) {
+                console.warn('Failed to delete old image:', deleteErr.message);
+            }
+        }
+
+
+        user.profilePicture = imageUrl;
+        await user.save();
+
+        res.send({ success: true, user });
+
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ error: 'Failed to update profile picture' });
     }
 });
 

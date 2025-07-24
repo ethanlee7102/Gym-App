@@ -21,7 +21,7 @@ export default function TabTwoScreen() {
             return;
         }
 
-        setQuiz({ ...quiz, gender: gender as 'male' | 'female' | 'other', weight: numericWeight });
+        setQuiz({ ...quiz, gender: gender as 'Male' | 'Female' | 'Other', weight: numericWeight });
         router.push('/quiz/quiz2'); // go to next screen
     };
 
@@ -44,14 +44,14 @@ export default function TabTwoScreen() {
 
             <ThemedView style={styles.genderContainer}>
           <Pressable
-            style={[styles.genderButton, gender === 'male' && styles.selected]}
-            onPress={() => setGender('male')}
+            style={[styles.genderButton, gender === 'Male' && styles.selected]}
+            onPress={() => setGender('Male')}
           >
             <ThemedText >Male</ThemedText>
           </Pressable>
           <Pressable
-            style={[styles.genderButton, gender === 'female' && styles.selected]}
-            onPress={() => setGender('female')}
+            style={[styles.genderButton, gender === 'Female' && styles.selected]}
+            onPress={() => setGender('Female')}
           >
             <ThemedText>Female</ThemedText>
           </Pressable>

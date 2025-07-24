@@ -9,11 +9,23 @@ interface User  {
     streak: number;
     title: string;
     quizComplete: boolean;
+    weight: number | null;
+    gender: 'male' | 'female' | 'other' | null;
+    personalRecords: PersonalRecords;
+    profilePicture: string;
+    
   // add more fields l8er
 };
+
 interface Friend {
     username: string;
 };
+
+interface PersonalRecords {
+  squat: number;
+  bench: number;
+  deadlift: number;
+}
 
 
 type UserContextType = {
