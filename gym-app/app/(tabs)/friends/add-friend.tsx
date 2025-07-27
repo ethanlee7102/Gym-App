@@ -2,7 +2,7 @@ import { StyleSheet, Image, Platform, Pressable, TextInput } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import PSVnoTitle from '@/components/PSVnoTitle';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -57,7 +57,7 @@ export default function TabTwoScreen() {
     
     return (
 
-        <ParallaxScrollView>
+        <PSVnoTitle>
             <ThemedView style={styles.headerWrapper}>
 
                 <Pressable style={styles.backButton} onPress={() => router.push('/(tabs)/friends')}>
@@ -102,7 +102,7 @@ export default function TabTwoScreen() {
                 </ThemedView>
                
             </ThemedView>
-        </ParallaxScrollView>
+        </PSVnoTitle>
 
     );
 }

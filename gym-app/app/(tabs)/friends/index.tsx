@@ -1,4 +1,5 @@
-import { StyleSheet, Image, Platform, Pressable } from 'react-native';
+import { StyleSheet, Platform, Pressable, View } from 'react-native';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -24,35 +25,41 @@ const screenWidth = Dimensions.get('window').width;
 export default function TabTwoScreen() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { user, loading } = useUser();
-  // useEffect(() => {
-  //   const fetchUserInfo = async () => {
-  //     try {
-  //       const res = await getMe();
-  //       setUserInfo(res.data);
-  //     } catch (e) {
-  //       console.error('Failed to load user info', e);
-  //     }
-  //   };
-  
-  //   fetchUserInfo();
-  // }, []);
+
   if (loading) return <ThemedText style={{ color: 'white' }}>Loading...</ThemedText>;
   return (
-    <ParallaxScrollView>
-      <ThemedView style={styles.titleContainer}>
+    <ParallaxScrollView header={
+      <View style={styles.titleContainer}>
         <ThemedText type="title">Friends</ThemedText>
             <Pressable style={styles.button} onPress={() => router.push('/friends/add-friend')}>
               <ThemedText type='smallSemiBold'>+ Add Friends</ThemedText>
             </Pressable>
-      </ThemedView>
+      </View>
+    }>
+      
 
       {user?.friends?.length ? (
     <ThemedView style={{ marginTop: 20 }}>
       
       {user.friends.map((friend, idx) => (
-        <ThemedText key={idx} style={{ color: 'white', marginTop: 5 }}>
-          {friend.username}
-        </ThemedText>
+        <ThemedView key={idx} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5, paddingRight: 60 }}>
+          <Image
+            source={{ uri: friend.profilePicture }}
+            style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }}
+          />
+          <ThemedView style = {styles.friendContainer}>
+            <ThemedText style={{flex: 1,  fontWeight: 'bold'}}>
+              {friend.username}
+            </ThemedText>
+            <ThemedText type='greyed'>
+              {friend.DOTSrank} | Lv. {friend.level} | Streak: {friend.streak}
+            </ThemedText>
+          </ThemedView>
+        </ThemedView>
+
+        // <ThemedText key={idx} style={{ color: 'white', marginTop: 5 }}>
+        //   {friend.username}
+        // </ThemedText>
       ))}
     </ThemedView>
       ) : (
@@ -99,5 +106,9 @@ const styles = StyleSheet.create({
     
     maxWidth: 105,
     maxHeight:30,
-},
+  },
+  friendContainer: {
+    flexDirection: 'row',
+    paddingLeft: 5
+  }
 });

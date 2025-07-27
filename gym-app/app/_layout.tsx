@@ -9,6 +9,7 @@ import { UserProvider } from '../context/user-context';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { ThemeProviderCustom } from '@/themes/ThemeContext';
+import { FeedProvider } from '@/context/feed-context';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -31,18 +32,21 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <UserProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false , animation: 'none'}} />
-          <Stack.Screen name="+not-found" />
-          <Stack.Screen name="stats"
-          options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
-          />
-          <Stack.Screen name="login" options={{ headerShown: false, animation: 'none' }}/>
-          <Stack.Screen name="index" options={{ headerShown: false, animation: 'none' }} />
-          <Stack.Screen name="quiz/quiz1" options={{ headerShown: false, animation: 'none' }} />
+        <FeedProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false , animation: 'none'}} />
+            <Stack.Screen name="+not-found" />
+            <Stack.Screen name="stats"
+            options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+            />
+            <Stack.Screen name="login" options={{ headerShown: false, animation: 'none' }}/>
+            <Stack.Screen name="index" options={{ headerShown: false, animation: 'none' }} />
         
-        </Stack>
-        <StatusBar style="auto" />
+            <Stack.Screen name="quiz" options={{ headerShown: false, animation: 'none' }} />
+          
+          </Stack>
+          <StatusBar style="auto" />
+        </FeedProvider>
       </UserProvider>
     </ThemeProvider>
     

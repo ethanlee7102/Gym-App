@@ -4,7 +4,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const app = express();
@@ -20,9 +20,11 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 const friendRoutes = require('../routes/friends');
 const postRoutes = require('../routes/feed-posts');
+const quizRoutes = require('../routes/quiz-submit')
 
 app.use('/', postRoutes);
 app.use('/', friendRoutes);
+app.use('/', quizRoutes);
 
 
 
@@ -69,7 +71,7 @@ app.get('/me', async (req, res) => {
     if (!token) return res.status(401).send({ error: 'Unauthorized' });
     try{
         const { id } = jwt.verify(token, SECRET);
-        const user = await User.findById(id).populate('friends', 'username');
+        const user = await User.findById(id).populate('friends', 'username profilePicture DOTSrank level streak');
         if (!user) {
 
             return res.status(404).send({ error: 'User not found' });
@@ -79,120 +81,97 @@ app.get('/me', async (req, res) => {
             friends: user.friends,
             userId: user.id,
             level: user.level,
+            exp: user.exp,
             streak: user.streak,
             title: user.title,
             quizComplete: user.quizComplete,
+            gender: user.gender,
+            weight: user.weight,
+            personalRecords: user.personalRecords,
+            profilePicture: user.profilePicture,
+            lastCheckIn: user.lastCheckIn,
+            DOTSrank: user.DOTSrank,
         });
     } catch(e){
         return res.status(403).send({ error: 'Invalid token' });
     }
 });
 
-// app.post('/friends/request', async (req, res) => {
-//     const token = req.headers.authorization?.split(' ')[1];
-//     if (!token) return res.status(401).send({ error: 'Unauthorized' });
-
-//     const { username: targetUsername } = req.body;
-
-//     try{
-//         const { id } = jwt.verify(token, SECRET);
-//         const sender = await User.findById(id);
-//         const recipient = await User.findOne({ username: targetUsername });
-
-//         if (!recipient){
-//             return res.status(404).send({ error: 'User not found' });
-//         } 
-
-//         if (recipient._id.equals(sender._id)){
-//             return res.status(400).send({ error: 'Cannot friend yourself' });
-//         } 
-
-//         if (recipient.friendRequestsReceived.includes(sender._id) || recipient.friends.includes(sender._id)) {
-//             return res.status(400).send({ error: 'Request already sent or already friends' });
-//         }
-
-//         if (sender.friendRequestsReceived.includes(recipient._id)) {
-//             return res.status(400).send({ error: 'User has already sent you a request' });
-//         }
+app.post('/api/profile-picture', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).send({ error: 'Unauthorized' });
+    try {
         
-//         sender.friendRequestsSent.push(recipient._id);
-//         recipient.friendRequestsReceived.push(sender._id);
+        const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
-//         await sender.save();
-//         await recipient.save();
-//         res.send({ success: true });
-//     }catch(e){
-//         res.status(403).send({ error: 'Invalid token' });
-//     }
-// });
+        const { imageUrl } = req.body;
+        // const user = await User.findByIdAndUpdate(id, { profilePicture: imageUrl }, { new: true });
 
-// app.post('/friends/accept', async (req, res) => {
-//     const token = req.headers.authorization?.split(' ')[1];
-//     if (!token) return res.status(401).send({ error: 'Unauthorized' });
+        // res.send({ success: true, user });
 
-//     const { username: requesterUsername } = req.body;
-
-//     try{
-//         const { id } = jwt.verify(token, SECRET);
-//         const recipient = await User.findById(id);
-//         const requester = await User.findOne({ username: requesterUsername });
-
-//         if (!recipient || !requester) return res.status(404).send({ error: 'User not found' });
-
-//         if (!recipient.friendRequestsReceived.includes(requester._id)) {
-//             return res.status(400).send({ error: 'No friend request to accept' });
-//         }
-
-//         recipient.friends.push(requester._id);
-//         requester.friends.push(recipient._id);
-
-//         recipient.friendRequestsReceived = recipient.friendRequestsReceived.filter(
-//             id => !id.equals(requester._id)
-//         );
-//         requester.friendRequestsSent = requester.friendRequestsSent.filter(
-//             id => !id.equals(recipient._id)
-//         );
-
-//         await recipient.save();
-//         await requester.save();
-
-//         res.send({ success: true });
-//     }catch(e){
-//         res.status(403).send({ error: 'Invalid token' });
-//     }
-// });
-
-// app.get('/friends/requests', async (req, res) => {
-//     const token = req.headers.authorization?.split(' ')[1];
-//     if (!token){
-//         return res.status(401).send({ error: 'Unauthorized' });
-//     } 
-
-//     try{
-//         const { id } = jwt.verify(token, SECRET);
-//         const user = await User.findById(id).populate('friendRequestsReceived', 'username');
-//         res.send({ requests: user.friendRequestsReceived });
-//     }catch(e){
-//         res.status(403).send({ error: 'Invalid token' });
-//     }
-// });
-
-// app.get('/friends/sentRequests', async (req, res) => {
-//     const token = req.headers.authorization?.split(' ')[1];
-//     if (!token){
-//         return res.status(401).send({ error: 'Unauthorized' });
-//     } 
-
-//     try{
-//         const { id } = jwt.verify(token, SECRET);
-//         const user = await User.findById(id).populate('friendRequestsSent', 'username');
-//         res.send({ sentRequests: user.friendRequestsSent });
-//     }catch(e){
-//         res.status(403).send({ error: 'Invalid token' });
-//     }
-// });
+        const user = await User.findById(id);
+        if (!user) return res.status(404).send({ error: 'User not found' });
 
 
+        if (user.profilePicture) {
+            const oldKey = user.profilePicture.split('/').pop();
+            try {
+                const deleteRes = await s3Client.send(new DeleteObjectCommand({
+                    Bucket: process.env.S3_BUCKET_NAME,
+                    Key: `profile-pic/${oldKey}`,
+                }));
+                // console.log(`Deleted old image: ${oldKey}`);
+
+                
+            } catch (deleteErr) {
+                console.warn('Failed to delete old image:', deleteErr.message);
+            }
+        }
+
+
+        user.profilePicture = imageUrl;
+        await user.save();
+
+        res.send({ success: true, user });
+
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ error: 'Failed to update profile picture' });
+    }
+});
+
+app.post('/checkin', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).send({ error: 'Unauthorized' });
+    try{
+        const { id } = jwt.verify(token, SECRET);
+        const user = await User.findById(id);
+        const today = new Date().toDateString();
+
+        if (user.lastCheckIn?.toDateString() === today) {
+            return res.send({ success: false, message: "Already checked in today" });
+        }
+
+        user.lastCheckIn = new Date();
+        user.streak += 1;
+
+        if (user.exp + 10 >= 100){
+            user.lvl += 1;
+        }
+        else{
+            user.exp += 10;
+        }
+        await user.save();
+
+        //TODO: add the what workout according to day
+
+        //TODO: create a post
+
+        res.send({ success: true });
+    } catch(e){
+
+    }
+});
 
 app.use((req, res) => {
     res.status(404).send({ error: 'Not found', path: req.originalUrl });

@@ -20,21 +20,22 @@ const s3Client = new S3Client({
 
 router.post('/api/posts', async (req, res) => {
     try {
-      const { caption, userId, imageUrl } = req.body;
-      const newPost = new Post({ userId, caption, imageUrl });
-      await newPost.save();
-      res.status(201).json(newPost);
+
+        const { caption, userId, imageUrl } = req.body;
+        const newPost = new Post({ userId, caption, imageUrl: imageUrl || '' });
+        await newPost.save();
+        res.status(201).json(newPost);
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Post creation failed.' });
+        console.error(err);
+        res.status(500).json({ error: 'Post creation failed.' });
     }
 });
 
 router.get('/feed', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
-    if (!token){
+    if (!token) {
         return res.status(401).send({ error: 'Unauthorized' });
-    } 
+    }
     const page = parseInt(req.query.page || '1');
     const limit = parseInt(req.query.limit || '10');
     const skip = (page - 1) * limit;
@@ -44,7 +45,7 @@ router.get('/feed', async (req, res) => {
         const user = await User.findById(id).populate('friends');
 
         const posts = await Post.find({ userId: { $in: user.friends } })
-            .populate('userId', 'username') 
+            .populate('userId', 'username profilePicture')
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
@@ -57,17 +58,19 @@ router.get('/feed', async (req, res) => {
 
 router.get('/api/upload-url', async (req, res) => {
     try {
+        const { type = 'posts' } = req.query;
         const filename = `${Date.now()}-photo.jpg`;
+        const key = `${type}/${filename}`;
         const s3Params = {
             Bucket: process.env.S3_BUCKET_NAME,
-            Key: filename,
+            Key: key,
             ContentType: 'image/jpeg',
         };
         const command = new PutObjectCommand(s3Params);
-    
+
         const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
         const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Params.Key}`;
-    
+
         res.send({ uploadUrl, imageUrl });
     } catch (e) {
         console.error('Failed to generate signed URL:', e);

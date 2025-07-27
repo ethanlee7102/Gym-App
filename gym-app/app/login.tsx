@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {StyleSheet, ScrollView, Pressable, Text, View, TextInput} from 'react-native';
+import {StyleSheet, ScrollView, Pressable, Text, View, TextInput, ActivityIndicator} from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,6 +9,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Image } from 'react-native';
 import { useUser } from '@/context/user-context';
+import { useFeed } from '@/context/feed-context';
 
 export default function Login() {
     const router = useRouter();
@@ -16,13 +17,18 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { refetchUser } = useUser();
+    const { refetchFeed } = useFeed();
+    const [loadingLogin, setLoadingLogin] = useState(false);
     const { user, loading } = useUser();
 
+
     const handleLogin = async () => {
+        setLoadingLogin(true);
         try{
             const logRes = await login(username, password);
             await AsyncStorage.setItem('token', logRes.data.token);
             const updatedUser = await refetchUser();
+            const updatedFeed = await refetchFeed();
             
 
             if (updatedUser?.quizComplete) {
@@ -33,6 +39,8 @@ export default function Login() {
               }
         }catch(e){
             setError("Login Failed")
+        }finally {
+            setLoadingLogin(false);
         }
     }
 
@@ -75,20 +83,24 @@ export default function Login() {
                     
                     />
                 </View>
-                <View style={styles.buttonContainer}>
-                    <Pressable 
-                    style={styles.loginButton}
-                    onPress={handleLogin}
-                    >
-                        <ThemedText type='defaultSemiBold'>Login</ThemedText>
-                    </Pressable>
-                    <Pressable 
-                    style={styles.registerButton}
-                    onPress={handleRegister}
-                    >
-                        <ThemedText type='defaultSemiBold'>Register</ThemedText>
-                    </Pressable>
-                </View>
+                {loadingLogin ? (<ActivityIndicator size="large" color="white" style={{ marginVertical: 20 }} />) : 
+                (
+                    <View style={styles.buttonContainer}>
+                        <Pressable 
+                        style={styles.loginButton}
+                        onPress={handleLogin}
+                        >
+                            <ThemedText type='defaultSemiBold'>Login</ThemedText>
+                        </Pressable>
+                        <Pressable 
+                        style={styles.registerButton}
+                        onPress={handleRegister}
+                        >
+                            <ThemedText type='defaultSemiBold'>Register</ThemedText>
+                        </Pressable>
+                    </View>
+                )}
+                
                 {error ? <Text style={{ textAlign: 'center', color: 'red' }}>{error}</Text> : null}
             </View>
         </NoTabSV>
