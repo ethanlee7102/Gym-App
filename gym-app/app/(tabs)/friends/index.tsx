@@ -1,4 +1,4 @@
-import { StyleSheet, Platform, Pressable } from 'react-native';
+import { StyleSheet, Platform, Pressable, View } from 'react-native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -28,24 +28,33 @@ export default function TabTwoScreen() {
 
   if (loading) return <ThemedText style={{ color: 'white' }}>Loading...</ThemedText>;
   return (
-    <ParallaxScrollView>
-      <ThemedView style={styles.titleContainer}>
+    <ParallaxScrollView header={
+      <View style={styles.titleContainer}>
         <ThemedText type="title">Friends</ThemedText>
             <Pressable style={styles.button} onPress={() => router.push('/friends/add-friend')}>
               <ThemedText type='smallSemiBold'>+ Add Friends</ThemedText>
             </Pressable>
-      </ThemedView>
+      </View>
+    }>
+      
 
       {user?.friends?.length ? (
     <ThemedView style={{ marginTop: 20 }}>
       
       {user.friends.map((friend, idx) => (
-        <ThemedView key={idx} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+        <ThemedView key={idx} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5, paddingRight: 60 }}>
           <Image
             source={{ uri: friend.profilePicture }}
             style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }}
           />
-          <ThemedText style={{ color: 'white' }}>{friend.username}</ThemedText>
+          <ThemedView style = {styles.friendContainer}>
+            <ThemedText style={{flex: 1,  fontWeight: 'bold'}}>
+              {friend.username}
+            </ThemedText>
+            <ThemedText type='greyed'>
+              {friend.DOTSrank} | Lv. {friend.level} | Streak: {friend.streak}
+            </ThemedText>
+          </ThemedView>
         </ThemedView>
 
         // <ThemedText key={idx} style={{ color: 'white', marginTop: 5 }}>
@@ -97,5 +106,9 @@ const styles = StyleSheet.create({
     
     maxWidth: 105,
     maxHeight:30,
-},
+  },
+  friendContainer: {
+    flexDirection: 'row',
+    paddingLeft: 5
+  }
 });

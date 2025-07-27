@@ -15,6 +15,7 @@ interface User  {
     profilePicture: string;
     dots: number;
     DOTSrank: 'Unranked' | 'Iron' | 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Elite' | 'Freak' | 'GOAT';
+    lastCheckIn: Date | null,
     
   // add more fields l8er
 };
@@ -22,6 +23,9 @@ interface User  {
 interface Friend {
     username: string;
     profilePicture: string;
+    DOTSrank: string;
+    level: number;
+    streak: number;
 };
 
 interface PersonalRecords {
@@ -35,12 +39,14 @@ type UserContextType = {
     user: User | null;
     loading: boolean;
     refetchUser: () => Promise<User | null>;
+    updateUser: (data: Partial<User>) => void;
 };
 
 const UserContext = createContext<UserContextType>({
     user: null,
     loading: true,
     refetchUser: async () => null, // default no-op
+    updateUser: () => {}
 });
 
 type Props = {
@@ -66,12 +72,16 @@ export const UserProvider = ({ children }: Props) => {
         }
     };
 
+    const updateUser = (data: Partial<User>) => {
+        setUser((prev) => (prev ? { ...prev, ...data } : prev));
+    };
+
     useEffect(() => {
         fetchUser();
     }, []);
 
     return (
-        <UserContext.Provider value={{ user, loading, refetchUser: fetchUser }}>
+        <UserContext.Provider value={{ user, loading, refetchUser: fetchUser, updateUser }}>
         {children}
         </UserContext.Provider>
     );

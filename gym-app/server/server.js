@@ -71,7 +71,7 @@ app.get('/me', async (req, res) => {
     if (!token) return res.status(401).send({ error: 'Unauthorized' });
     try{
         const { id } = jwt.verify(token, SECRET);
-        const user = await User.findById(id).populate('friends', 'username profilePicture');
+        const user = await User.findById(id).populate('friends', 'username profilePicture DOTSrank level streak');
         if (!user) {
 
             return res.status(404).send({ error: 'User not found' });
@@ -81,6 +81,7 @@ app.get('/me', async (req, res) => {
             friends: user.friends,
             userId: user.id,
             level: user.level,
+            exp: user.exp,
             streak: user.streak,
             title: user.title,
             quizComplete: user.quizComplete,
@@ -88,6 +89,7 @@ app.get('/me', async (req, res) => {
             weight: user.weight,
             personalRecords: user.personalRecords,
             profilePicture: user.profilePicture,
+            lastCheckIn: user.lastCheckIn,
             DOTSrank: user.DOTSrank,
         });
     } catch(e){
@@ -135,6 +137,39 @@ app.post('/api/profile-picture', async (req, res) => {
     } catch (e) {
         console.error(e);
         res.status(500).send({ error: 'Failed to update profile picture' });
+    }
+});
+
+app.post('/checkin', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).send({ error: 'Unauthorized' });
+    try{
+        const { id } = jwt.verify(token, SECRET);
+        const user = await User.findById(id);
+        const today = new Date().toDateString();
+
+        if (user.lastCheckIn?.toDateString() === today) {
+            return res.send({ success: false, message: "Already checked in today" });
+        }
+
+        user.lastCheckIn = new Date();
+        user.streak += 1;
+
+        if (user.exp + 10 >= 100){
+            user.lvl += 1;
+        }
+        else{
+            user.exp += 10;
+        }
+        await user.save();
+
+        //TODO: add the what workout according to day
+
+        //TODO: create a post
+
+        res.send({ success: true });
+    } catch(e){
+
     }
 });
 

@@ -22,7 +22,7 @@ router.post('/api/posts', async (req, res) => {
     try {
 
         const { caption, userId, imageUrl } = req.body;
-        const newPost = new Post({ userId, caption, imageUrl });
+        const newPost = new Post({ userId, caption, imageUrl: imageUrl || '' });
         await newPost.save();
         res.status(201).json(newPost);
     } catch (err) {

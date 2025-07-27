@@ -2,7 +2,7 @@ import { StyleSheet, Platform, Pressable, Text, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import PSVnoTitle from '@/components/PSVnoTitle';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -111,7 +111,7 @@ export default function TabTwoScreen() {
 
     if (loading) return <ThemedText style={{ color: 'white' }}>Loading...</ThemedText>;
     return (
-        <ParallaxScrollView>
+        <PSVnoTitle>
             <ThemedView style={styles.profileContainer}>
                 <Pressable onPress={async () => {
                     const picked = await pickImage();
@@ -156,7 +156,7 @@ export default function TabTwoScreen() {
             </Pressable>
 
 
-        </ParallaxScrollView>
+        </PSVnoTitle>
     );
 }
 

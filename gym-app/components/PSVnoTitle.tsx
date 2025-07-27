@@ -7,24 +7,20 @@ import { useBottomTabOverflow } from '@/components/ui/TabBarBackground';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 
-type Props = PropsWithChildren<ScrollViewProps> & {
-  header?: ReactNode;
-};;
+type Props = PropsWithChildren<ScrollViewProps>;
 
-export default function ParallaxScrollView({ children, header, ...scrollProps }: Props) {
+export default function ParallaxScrollView({ children, ...scrollProps }: Props) {
   const bottom = useBottomTabOverflow();
 
   return (
     <ThemedView style={styles.container}>
       <BlurView intensity={3} tint="dark" style={styles.topBlur} />
       <LinearGradient
-        colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0.6)', 'rgba(0,0,0,0.4)','rgba(0,0,0,0)']}
+        colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0)']}
         style={styles.topGradient}
       />
 
-      <View style={styles.headerContainer}>
-        {header}
-      </View>
+    
       <Animated.ScrollView
         scrollEventThrottle={16}
         scrollIndicatorInsets={{ top: 60, bottom }}
@@ -42,7 +38,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingTop: 127,
+    paddingTop: 60,
     padding: 27,
     gap: 16,
   },
@@ -51,7 +47,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 127,
+    height: 60,
     zIndex: 1,
   },
   topGradient: {
@@ -59,16 +55,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 117,
-    zIndex: 2, // higher than blur, lower than header
-  },
-  headerContainer: {
-    position: 'absolute',
-    top: 47,
-    left: 27,
-    right: 27,
     height: 60,
-    justifyContent: 'center',
-    zIndex: 3,
+    zIndex: 2, // higher than blur, lower than header
   },
 });

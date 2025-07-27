@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     friendRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 
     level: { type: Number, default: 1 },
+    exp: {type: Number, default: 0},
     streak: { type: Number, default: 0 },
     title: { type: String, default: 'Rookie' },
     personalRecords: {
@@ -21,6 +22,7 @@ const UserSchema = new mongoose.Schema({
     profilePicture: { type: String },
     dots: { type: Number, default: 0 },
     DOTSrank: { type: String, enum: ['Unranked', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Elite', 'Freak', 'GOAT'], default: 'Unranked' },
+    lastCheckIn: { type: Date, default: null },
 });
 
 module.exports = mongoose.model('User', UserSchema);

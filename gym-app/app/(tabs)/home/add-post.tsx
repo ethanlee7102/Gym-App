@@ -89,8 +89,8 @@ export default function AddPostScreen() {
 
 
     const handlePost = async () => {
-        if (!image) {
-            Alert.alert('No image selected', 'Please choose an image to post.');
+        if (!caption.trim() && !image) {
+            Alert.alert('No caption', 'Please add a caption.');
             return;
         }
 
@@ -100,28 +100,32 @@ export default function AddPostScreen() {
         }
         setUploading(true);
         try {
-            const { data } = await getUploadUrl('posts');
-            const { uploadUrl, imageUrl } = data;
+            let imageUrl = '';
+            if (image) {
+                const { data } = await getUploadUrl('posts');
+                const { uploadUrl, imageUrl: uploadedImageUrl } = data;
 
 
-            // ✅ Get file as blob
-            const response = await fetch(image.uri);
-            const blob = await response.blob();
+                // get da file as blob
+                const response = await fetch(image.uri);
+                const blob = await response.blob();
 
-            // ✅ Upload blob to S3
-            const uploadRes = await fetch(uploadUrl, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'image/jpeg'
-                },
-                body: blob
-            });
-            if (!uploadRes.ok) {
-                const text = await uploadRes.text();
-                throw new Error(`Failed to upload to S3: ${uploadRes.status} - ${text}`);
+                // upload da blob to s3
+                const uploadRes = await fetch(uploadUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'image/jpeg'
+                    },
+                    body: blob
+                });
+                if (!uploadRes.ok) {
+                    const text = await uploadRes.text();
+                    throw new Error(`Failed to upload to S3: ${uploadRes.status} - ${text}`);
+                }
+
+                imageUrl = uploadedImageUrl;
+                // if (!uploadRes.ok) throw new Error('Failed to upload to S3');
             }
-            // if (!uploadRes.ok) throw new Error('Failed to upload to S3');
-
             await createPost(caption, imageUrl, user.userId);
             Alert.alert('Post uploaded!');
             setCaption('');
