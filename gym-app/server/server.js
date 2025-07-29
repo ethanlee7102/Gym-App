@@ -153,15 +153,24 @@ app.post('/checkin', async (req, res) => {
         }
 
         user.lastCheckIn = new Date();
+        
+
+        const gainedExp = 10 + user.streak * 2;
+        user.exp += gainedExp;
+
+        while (user.exp >= user.level * 25) {
+            user.exp -= user.level * 25;
+            user.level += 1;
+        }
         user.streak += 1;
 
-        if (user.exp + 10 >= 100){
-            user.level += 1;
-            user.exp = 0;
-        }
-        else{
-            user.exp += 10;
-        }
+        // if ((user.exp + (10 + user.streak * 2)) >= (user.level * 25)){
+        //     user.exp -= (user.level * 25);
+        //     user.level += 1;
+        // }
+        // else{
+        //     user.exp += (10 + user.streak * 2);
+        // }
         await user.save();
 
         //TODO: add the what workout according to day
@@ -181,6 +190,20 @@ app.post('/checkin', async (req, res) => {
 
     } catch(e){
         console.error(e);
+    }
+});
+
+app.get('/leaderboard/streaks', async (req, res) => {
+    try {
+        const topUsers = await User.find({ streak: { $gt: 0 } })
+            .sort({ streak: -1 })
+            .limit(30)
+            .select('username streak profilePicture');
+
+        res.send(topUsers);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Failed to fetch leaderboard' });
     }
 });
 

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Platform, Text, View, ActivityIndicator, FlatList } from 'react-native';
+import { Pressable, StyleSheet, Platform, Text, View, ActivityIndicator, FlatList, RefreshControl } from 'react-native';
 import { Image } from 'expo-image';
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFeed, checkIn } from '../../api/api';
 import { useUser } from '@/context/user-context';
 import { useFeed } from '@/context/feed-context';
+import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 
 
@@ -18,7 +19,8 @@ export default function HomeScreen() {
     
     const [loggingin, setLoading] = useState(true);
     const scrollCooldownRef = useRef<number | null>(null);
-    const { posts: feedPosts, loading: feedLoading, fetchMore, hasMore } = useFeed();
+    const { posts: feedPosts, loading: feedLoading, fetchMore, hasMore, refetchFeed } = useFeed();
+    const [refreshing, setRefreshing] = useState(false);
     
     
     
@@ -59,6 +61,12 @@ export default function HomeScreen() {
         }
     }
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await refetchFeed();
+        setRefreshing(false);
+    };
+
 
     if (loggingin) {
         return (
@@ -80,25 +88,30 @@ export default function HomeScreen() {
                 <Text style = {{color: '#bdbdbdff'}}>＋</Text>
             </Pressable>
 
-            <ParallaxScrollView header = {
-                <View style={styles.titleContainer}>
-                    <ThemedText type="title">Home</ThemedText>
-                </View>
-            } onScroll={({ nativeEvent }) => {
-                const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
-                const isNearBottom =
-                layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
+            <ParallaxScrollView 
+                header = {
+                    <View style={styles.titleContainer}>
+                        <ThemedText type="title">Home</ThemedText>
+                    </View>
+                } 
+                onScroll={({ nativeEvent }) => {
+                    const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+                    const isNearBottom =
+                    layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
 
-                if (isNearBottom && !scrollCooldownRef.current) {
-                    fetchMore();
-              
-                    
-                    scrollCooldownRef.current = setTimeout(() => {
-                      scrollCooldownRef.current = null;
-                    }, 100);
-                }
+                    if (isNearBottom && !scrollCooldownRef.current) {
+                        fetchMore();
+                        scrollCooldownRef.current = setTimeout(() => {
+                        scrollCooldownRef.current = null;
+                        }, 100);
+                    }
                 }}
-            scrollEventThrottle={16}>
+                scrollEventThrottle={16}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fff" />
+                }
+            
+            >
 
                  <View style={styles.card}>
                 <ThemedText >Good Afternoon {user?.username}!</ThemedText>
@@ -166,13 +179,29 @@ export default function HomeScreen() {
                 onPress={() => router.push('/stats')}
             >
                 <ThemedView style={styles.textWrapper}>
-                    <Text style={styles.buttonText}>Level: {user?.level}</Text>
-                    <Text style={styles.buttonText2}>Title: {user?.title}</Text>
+                    <View style={styles.levelAndUpWrapper}>
+                        <Text style={styles.buttonText}>Level: {user?.level}</Text>
+                        <View style={{ flex: 1 }} />
+                        <Ionicons name="chevron-up-outline" size={28} color="#D9D9D9" style={{ top: -4 }}></Ionicons>
+                    </View>
+                    <View style={styles.titleAndExpWrapper}>
+                        <Text style={styles.buttonText2}>Title: {user?.title}</Text>
+                        <View style={{ flex: 1 }} />
+                        <Text style={styles.expText}>
+                            {user?.exp}/{(user?.level ?? 1) * 25}
+                        </Text>
+                    </View>
                 </ThemedView>
+
                 <ThemedView style={styles.progressBarContainer}>
-                    <ThemedView style={styles.progressBarFill} />
+                    <ThemedView style={[styles.progressBarFill,
+                            {width: `${ user && user.level > 0 ? Math.min((user.exp / (user.level * 25)) * 100, 100) : 0}%`,},
+                        ]} 
+                    />
+                    
                 </ThemedView>
             </Pressable>
+            
         </ThemedView>
 
     );
@@ -229,7 +258,6 @@ const styles = StyleSheet.create({
     buttonText2: {
         color: '#bebcbcff',
         fontSize: 14,
-
     },
     container: {
         flex: 1,
@@ -241,6 +269,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#555',
         overflow: 'hidden',
     },
+    titleAndExpWrapper: {
+        flexDirection: 'row', 
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '97%',
+    },
+    levelAndUpWrapper: {
+        flexDirection: 'row', 
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '96%',
+    },
     textWrapper: {
         paddingLeft: 15,
         paddingBottom: 5,
@@ -248,7 +288,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20,
     },
     progressBarFill: {
-        width: '75%',  //this should be changed to grow dynamically
+        width: '0%',
         height: '100%',
         backgroundColor: '#4aa8ff',
     },
@@ -260,6 +300,11 @@ const styles = StyleSheet.create({
         paddingRight: 40,
         paddingTop: 10,
         paddingBottom: 15
+    },
+    expText: {
+        color: '#bebcbcff',
+        fontSize: 14,
+        marginLeft: 0,
     },
     postHeaderContainer: {
         flexDirection: 'row', 

@@ -95,3 +95,7 @@ export const checkIn = async () => {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
+
+export const getStreakLeaderboard = async () => {
+    return axios.get(`${API_BASE}/leaderboard/streaks`);
+};
