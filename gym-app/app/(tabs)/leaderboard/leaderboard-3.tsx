@@ -1,10 +1,12 @@
 import { StyleSheet, Image, Platform, View, ActivityIndicator, Pressable } from 'react-native';
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { getEloLeaderboard } from '@/app/api/api';
 
 export default function TabTwoScreen() {
   return (
@@ -14,19 +16,19 @@ export default function TabTwoScreen() {
       </View>
     }>
         <View style={styles.buttonContainer}>
-                        <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-1')}>
-                                    <ThemedText type='smallSemiBold'>Streaks</ThemedText>
-                        </Pressable>
-                        <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-2')}>
-                                    <ThemedText type='smallSemiBold'>Level</ThemedText>
-                        </Pressable>
-                        <Pressable style={styles.buttonSelected} onPress={() => router.push('/leaderboard/leaderboard-3')}>
-                                    <ThemedText type='smallSemiBold'>ELO?</ThemedText>
-                        </Pressable>
-                        <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-4')}>
-                                    <ThemedText type='smallSemiBold'>DOTS</ThemedText>
-                        </Pressable>
-                    </View>
+            <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-1')}>
+                        <ThemedText type='smallSemiBold'>Streaks</ThemedText>
+            </Pressable>
+            <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-2')}>
+                        <ThemedText type='smallSemiBold'>Level</ThemedText>
+            </Pressable>
+            <Pressable style={styles.buttonSelected} onPress={() => router.push('/leaderboard/leaderboard-3')}>
+                        <ThemedText type='smallSemiBold'>ELO?</ThemedText>
+            </Pressable>
+            <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-4')}>
+                        <ThemedText type='smallSemiBold'>DOTS</ThemedText>
+            </Pressable>
+        </View>
       
     </ParallaxScrollView>
   );
