@@ -15,7 +15,8 @@ interface User  {
     profilePicture: string;
     dots: number;
     DOTSrank: 'Unranked' | 'Iron' | 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Elite' | 'Freak' | 'GOAT';
-    lastCheckIn: Date | null,
+    lastCheckIn: Date | null;
+    exp: number;
     
   // add more fields l8er
 };

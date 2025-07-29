@@ -156,7 +156,8 @@ app.post('/checkin', async (req, res) => {
         user.streak += 1;
 
         if (user.exp + 10 >= 100){
-            user.lvl += 1;
+            user.level += 1;
+            user.exp = 0;
         }
         else{
             user.exp += 10;
@@ -165,11 +166,21 @@ app.post('/checkin', async (req, res) => {
 
         //TODO: add the what workout according to day
 
-        //TODO: create a post
+        //TODO: prompt to choose to add a photo?
+        const newPost = new Post({ userId: user._id, caption: `I worked out today!`, imageUrl: '' });
+        await newPost.save();
+        
+        res.send({
+            success: true,
+            message: 'Checked in successfully',
+            streak: user.streak,
+            level: user.level,
+            exp: user.exp,
+            lastCheckIn: user.lastCheckIn
+        });
 
-        res.send({ success: true });
     } catch(e){
-
+        console.error(e);
     }
 });
 

@@ -7,7 +7,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getFeed } from '../../api/api';
+import { getFeed, checkIn } from '../../api/api';
 import { useUser } from '@/context/user-context';
 import { useFeed } from '@/context/feed-context';
 import dayjs from 'dayjs';
@@ -36,13 +36,26 @@ export default function HomeScreen() {
 
     
 
-    const { user, loading } = useUser();
+    const { user, loading, updateUser } = useUser();
 
     const handleCheckin = async () => {
         try{
-            
-        } catch(e){
+            const res = await checkIn();
 
+            if (res.data.success) {
+                alert('✅ Checked in!');
+                updateUser({
+                    streak: res.data.streak,
+                    level: res.data.level,
+                    exp: res.data.exp,
+                    lastCheckIn: new Date(), 
+                });
+            } else {
+                alert(res.data.message);
+            }
+        } catch(e){
+            alert("Error checking in");
+            console.error(e);
         }
     }
 
@@ -109,7 +122,7 @@ export default function HomeScreen() {
                      <View style={styles.verticalDivider} />
 
                     <View style={styles.halfSection}>
-                        <Pressable style={styles.checkInButton}>
+                        <Pressable style={styles.checkInButton} onPress = {handleCheckin}>
                             <ThemedText style={styles.checkInText}>I worked</ThemedText>
                             <ThemedText style={styles.checkInText}>out today!</ThemedText>
                         </Pressable>
