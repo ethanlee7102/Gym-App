@@ -25,4 +25,8 @@ const UserSchema = new mongoose.Schema({
     lastCheckIn: { type: Date, default: null },
 });
 
+UserSchema.index({ streak: -1 });
+UserSchema.index({ level: -1 });
+UserSchema.index({ dots: -1 });
+
 module.exports = mongoose.model('User', UserSchema);
