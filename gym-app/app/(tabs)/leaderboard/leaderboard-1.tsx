@@ -41,7 +41,7 @@ export default function StreakLeaderboard() {
             }
         >
             <View style={styles.buttonContainer}>
-                <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-1')}>
+                <Pressable style={styles.buttonSelected} onPress={() => router.push('/leaderboard/leaderboard-1')}>
                             <ThemedText type='smallSemiBold'>Streaks</ThemedText>
                 </Pressable>
                 <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-2')}>
@@ -122,17 +122,32 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    padding: 0,
-   
-    backgroundColor: '#373737',
-    borderColor: '#AFAFAF',
-    borderWidth: 1,
-    margin: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
+        padding: 0,
     
-    width: 80,
-    height: 30
-  },
+        backgroundColor: '#373737',
+        borderColor: '#AFAFAF',
+        borderWidth: 1,
+        margin: 5,
+        
+        width: 80,
+        height: 30
+    },
+
+    buttonSelected: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
+        padding: 0,
+    
+        backgroundColor: '#919191ff',
+        borderColor: '#AFAFAF',
+        borderWidth: 1,
+        margin: 5,
+        
+        width: 80,
+        height: 30
+    },
 });

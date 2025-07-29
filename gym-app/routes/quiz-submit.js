@@ -12,7 +12,7 @@ router.post('/quiz/submit', async (req, res) => {
     try{
         const { id } = jwt.verify(token, SECRET);
         const { gender, weight, personalRecords } = req.body;
-        const profilePicture = 'https://gymapp-post-images.s3.us-west-2.amazonaws.com/profile-pic/1753340263142-photo.jpg';
+        const profilePicture = 'https://gymapp-post-images.s3.us-west-2.amazonaws.com/profile-pic/1753829552138-photo.jpg';
         const coeffs = {
             Male: {
             a: -307.75076,

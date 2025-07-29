@@ -23,7 +23,7 @@ export default function TabTwoScreen() {
                         <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-3')}>
                                     <ThemedText type='smallSemiBold'>ELO?</ThemedText>
                         </Pressable>
-                        <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-4')}>
+                        <Pressable style={styles.buttonSelected} onPress={() => router.push('/leaderboard/leaderboard-4')}>
                                     <ThemedText type='smallSemiBold'>DOTS</ThemedText>
                         </Pressable>
                     </View>
@@ -48,13 +48,27 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    button: {
+  button: {
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
     padding: 0,
    
     backgroundColor: '#373737',
+    borderColor: '#AFAFAF',
+    borderWidth: 1,
+    margin: 5,
+    
+    width: 80,
+    height: 30
+  },
+  buttonSelected: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    padding: 0,
+   
+    backgroundColor: '#919191ff',
     borderColor: '#AFAFAF',
     borderWidth: 1,
     margin: 5,

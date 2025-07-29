@@ -207,6 +207,49 @@ app.get('/leaderboard/streaks', async (req, res) => {
     }
 });
 
+app.get('/leaderboard/level', async (req, res) => {
+    try {
+        const topUsers = await User.find({ level: { $gt: 0 } })
+            .sort({ level: -1 })
+            .limit(30)
+            .select('username level profilePicture');
+
+        res.send(topUsers);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Failed to fetch leaderboard' });
+    }
+});
+
+//TODO: figure out elo before using this
+app.get('/leaderboard/elo', async (req, res) => {
+    try {
+        const topUsers = await User.find({ streak: { $gt: 0 } })
+            .sort({ streak: -1 })
+            .limit(30)
+            .select('username streak profilePicture');
+
+        res.send(topUsers);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Failed to fetch leaderboard' });
+    }
+});
+
+app.get('/leaderboard/dots', async (req, res) => {
+    try {
+        const topUsers = await User.find({ dots: { $gt: 0 } })
+            .sort({ dots: -1 })
+            .limit(30)
+            .select('username dots DOTSrank profilePicture');
+
+        res.send(topUsers);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: 'Failed to fetch leaderboard' });
+    }
+});
+
 app.use((req, res) => {
     res.status(404).send({ error: 'Not found', path: req.originalUrl });
 });

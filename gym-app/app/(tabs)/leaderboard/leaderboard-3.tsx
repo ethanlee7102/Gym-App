@@ -20,7 +20,7 @@ export default function TabTwoScreen() {
                         <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-2')}>
                                     <ThemedText type='smallSemiBold'>Level</ThemedText>
                         </Pressable>
-                        <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-3')}>
+                        <Pressable style={styles.buttonSelected} onPress={() => router.push('/leaderboard/leaderboard-3')}>
                                     <ThemedText type='smallSemiBold'>ELO?</ThemedText>
                         </Pressable>
                         <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-4')}>
@@ -33,33 +33,47 @@ export default function TabTwoScreen() {
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingTop: 10,
-  },
-  buttonContainer: {
+    headerImage: {
+        color: '#808080',
+        bottom: -90,
+        left: -35,
+        position: 'absolute',
+    },
+    titleContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        gap: 8,
+        paddingTop: 10,
+    },
+    buttonContainer: {
+            flexDirection: 'row',
+            justifyContent: 'space-between'
     },
     button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    padding: 0,
-   
-    backgroundColor: '#373737',
-    borderColor: '#AFAFAF',
-    borderWidth: 1,
-    margin: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
+        padding: 0,
     
-    width: 80,
-    height: 30
-  },
+        backgroundColor: '#373737',
+        borderColor: '#AFAFAF',
+        borderWidth: 1,
+        margin: 5,
+        
+        width: 80,
+        height: 30
+    },
+    buttonSelected: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
+        padding: 0,
+    
+        backgroundColor: '#919191ff',
+        borderColor: '#AFAFAF',
+        borderWidth: 1,
+        margin: 5,
+        
+        width: 80,
+        height: 30
+    },
 });
