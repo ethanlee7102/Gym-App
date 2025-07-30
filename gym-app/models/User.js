@@ -12,9 +12,21 @@ const UserSchema = new mongoose.Schema({
     streak: { type: Number, default: 0 },
     title: { type: String, default: 'Rookie' },
     personalRecords: {
-        squat: { type: Number, default: 0 },
-        bench: { type: Number, default: 0 },
-        deadlift: { type: Number, default: 0 },
+        squat: {
+            weight: { type: Number, default: 0 },
+            verified: { type: Boolean, default: false },
+            videoUrl: { type: String, default: '' }
+        },
+        bench: {
+            weight: { type: Number, default: 0 },
+            verified: { type: Boolean, default: false },
+            videoUrl: { type: String, default: '' }
+        },
+        deadlift: {
+            weight: { type: Number, default: 0 },
+            verified: { type: Boolean, default: false },
+            videoUrl: { type: String, default: '' }
+        }
     },
     gender: { type: String, enum: ['Male', 'Female', 'Other'], default: null },
     weight: { type: Number, default: null },

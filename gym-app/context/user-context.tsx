@@ -29,10 +29,16 @@ interface Friend {
     streak: number;
 };
 
+interface Lift {
+  weight: number;
+  verified: boolean;
+  videoUrl: string;
+}
+
 interface PersonalRecords {
-  squat: number;
-  bench: number;
-  deadlift: number;
+  squat: Lift;
+  bench: Lift;
+  deadlift: Lift;
 }
 
 

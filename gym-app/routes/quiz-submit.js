@@ -48,10 +48,28 @@ router.post('/quiz/submit', async (req, res) => {
 
         const DOTSrank = getDotsRank(dots);
 
+        const wrappedPRs = {
+            squat: {
+                weight: personalRecords.squat,
+                verified: false, // default, can be updated later
+                videoUrl: ''
+            },
+            bench: {
+                weight: personalRecords.bench,
+                verified: false,
+                videoUrl: ''
+            },
+            deadlift: {
+                weight: personalRecords.deadlift,
+                verified: false,
+                videoUrl: ''
+            }
+        };
+
         const updatedUser = await User.findByIdAndUpdate(id, {
             gender,
             weight,
-            personalRecords,
+            personalRecords: wrappedPRs,
             quizComplete: true,
             profilePicture,
             dots,

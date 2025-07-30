@@ -10,9 +10,6 @@ export default function IndexLayout() {
             <Stack.Screen name="leaderboard-level" options={{ animation: 'none' }} />
             <Stack.Screen name="leaderboard-3" options={{ animation: 'none' }} />
             <Stack.Screen name="leaderboard-dots" options={{ animation: 'none' }} />
-            <Stack.Screen name="leaderboard-bench" options={{ animation: 'none' }} />
-            <Stack.Screen name="leaderboard-squat" options={{ animation: 'none' }} />
-            <Stack.Screen name="leaderboard-deadlift" options={{ animation: 'none' }} />
         </Stack>
         
     );
