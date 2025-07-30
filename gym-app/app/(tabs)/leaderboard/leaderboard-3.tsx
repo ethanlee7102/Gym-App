@@ -16,16 +16,16 @@ export default function TabTwoScreen() {
       </View>
     }>
         <View style={styles.buttonContainer}>
-            <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-1')}>
+            <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-streak')}>
                         <ThemedText type='smallSemiBold'>Streaks</ThemedText>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-2')}>
+            <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-level')}>
                         <ThemedText type='smallSemiBold'>Level</ThemedText>
             </Pressable>
             <Pressable style={styles.buttonSelected} onPress={() => router.push('/leaderboard/leaderboard-3')}>
                         <ThemedText type='smallSemiBold'>ELO?</ThemedText>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-4')}>
+            <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-dots')}>
                         <ThemedText type='smallSemiBold'>DOTS</ThemedText>
             </Pressable>
         </View>
