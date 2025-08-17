@@ -35,6 +35,9 @@ const UserSchema = new mongoose.Schema({
     dots: { type: Number, default: 0 },
     DOTSrank: { type: String, enum: ['Unranked', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Elite', 'Freak', 'GOAT'], default: 'Unranked' },
     lastCheckIn: { type: Date, default: null },
+
+    timezone: { type: String, default: 'UTC' },
+    workoutDays: [Number],
 });
 
 UserSchema.index({ streak: -1 });

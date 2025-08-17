@@ -17,6 +17,8 @@ interface User  {
     DOTSrank: 'Unranked' | 'Iron' | 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Elite' | 'Freak' | 'GOAT';
     lastCheckIn: Date | null;
     exp: number;
+    timezone: string
+    workoutDays: number[],
     
   // add more fields l8er
 };

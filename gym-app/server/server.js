@@ -250,6 +250,52 @@ app.get('/leaderboard/dots', async (req, res) => {
     }
 });
 
+const cron = require('node-cron');
+const { DateTime } = require('luxon');
+
+cron.schedule('0 * * * *', async () => {
+    console.log('running streak reset...');
+
+  try {
+    const users = await User.find({});
+
+    for (const user of users) {
+      const { timezone, lastCheckIn, workoutDays } = user;
+
+      if (!timezone || !Array.isArray(workoutDays)) continue;
+
+      // get time in users timezone
+      const now = DateTime.utc().setZone(timezone);
+
+      // only if its midnight for them
+      if (now.hour !== 0) continue;
+
+      // get yesterday (since its technically a new day at midnight)
+      const yesterday = now.minus({ days: 1 });
+      const yesterdayDay = yesterday.weekday % 7; // i guess luxon is 1-7 so fixt that to 0-6
+
+      // if "yesterday" is a workout day
+      if (workoutDays.includes(yesterdayDay)) {
+        const lastCheckInDate = lastCheckIn
+          ? DateTime.fromJSDate(lastCheckIn).setZone(timezone).toFormat('yyyy-MM-dd')
+          : null;
+
+        const yesterdayStr = yesterday.toFormat('yyyy-MM-dd');
+
+        if (lastCheckInDate !== yesterdayStr) {
+          user.streak = 0;
+          await user.save();
+          console.log(`🔁 Reset streak for ${user.username}`);
+        }
+      }
+    }
+
+    console.log('streak reset success.');
+  } catch (err) {
+    console.error('error resetting streaks', err);
+  }
+});
+
 app.use((req, res) => {
     res.status(404).send({ error: 'Not found', path: req.originalUrl });
 });

@@ -11,7 +11,7 @@ router.post('/quiz/submit', async (req, res) => {
 
     try{
         const { id } = jwt.verify(token, SECRET);
-        const { gender, weight, personalRecords } = req.body;
+        const { gender, weight, personalRecords, workoutDays, timezone } = req.body;
         const profilePicture = 'https://gymapp-post-images.s3.us-west-2.amazonaws.com/profile-pic/1753829552138-photo.jpg';
         const coeffs = {
             Male: {
@@ -67,13 +67,15 @@ router.post('/quiz/submit', async (req, res) => {
         };
 
         const updatedUser = await User.findByIdAndUpdate(id, {
-            gender,
-            weight,
-            personalRecords: wrappedPRs,
-            quizComplete: true,
-            profilePicture,
-            dots,
-            DOTSrank,
+                gender,
+                weight,
+                personalRecords: wrappedPRs,
+                quizComplete: true,
+                profilePicture,
+                dots,
+                DOTSrank,
+                timezone,
+                workoutDays
             },
             { new: true }
         )
