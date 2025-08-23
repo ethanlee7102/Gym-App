@@ -102,8 +102,8 @@ export default function AddPostScreen() {
         try {
             let imageUrl = '';
             if (image) {
-                const { data } = await getUploadUrl('posts');
-                const { uploadUrl, imageUrl: uploadedImageUrl } = data;
+                const { data } = await getUploadUrl('posts', 'image/jpeg');
+                const { uploadUrl, fileUrl: uploadedImageUrl } = data;
 
 
                 // get da file as blob
@@ -139,10 +139,10 @@ export default function AddPostScreen() {
     };
 
     return (
-        <ParallaxScrollView>
-            <ThemedView style={styles.titleContainer}>
+        <ParallaxScrollView header={<View style={styles.titleContainer}>
                 <ThemedText type="title">Post</ThemedText>
-            </ThemedView>
+            </View>}>
+            
             <ThemedView style={styles.container}>
                 <Button title="Pick an image" onPress={pickImage} />
                 <Button title="Take a photo" onPress={pickFromCamera} />

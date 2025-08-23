@@ -58,20 +58,25 @@ router.get('/feed', async (req, res) => {
 
 router.get('/api/upload-url', async (req, res) => {
     try {
-        const { type = 'posts' } = req.query;
-        const filename = `${Date.now()}-photo.jpg`;
+        const { type = 'posts', fileType = 'image/jpeg' } = req.query;
+        const isVideo = String(fileType).startsWith('video/');
+
+        const ext = isVideo ? 'mp4' : 'jpg';
+
+        const filename = `${Date.now()}-upload.${ext}`;
         const key = `${type}/${filename}`;
+
         const s3Params = {
             Bucket: process.env.S3_BUCKET_NAME,
             Key: key,
-            ContentType: 'image/jpeg',
+            ContentType: fileType,
         };
         const command = new PutObjectCommand(s3Params);
 
         const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
-        const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Params.Key}`;
+        const fileUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Params.Key}`;
 
-        res.send({ uploadUrl, imageUrl });
+        res.send({ uploadUrl, fileUrl, key });
     } catch (e) {
         console.error('Failed to generate signed URL:', e);
         res.status(500).send({ error: 'Could not generate signed URL' });
