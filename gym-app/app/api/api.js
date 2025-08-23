@@ -99,3 +99,16 @@ export const checkIn = async () => {
 export const getStreakLeaderboard = async () => {
     return axios.get(`${API_BASE}/leaderboard/streaks`);
 };
+
+export const getLevelLeaderboard = async () => {
+    return axios.get(`${API_BASE}/leaderboard/level`);
+};
+
+//TODO: figure out elo before using this
+export const getEloLeaderboard = async () => {
+    return axios.get(`${API_BASE}/leaderboard/elo`);
+};
+
+export const getDotsLeaderboard = async () => {
+    return axios.get(`${API_BASE}/leaderboard/dots`);
+};

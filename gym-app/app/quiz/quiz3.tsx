@@ -11,18 +11,22 @@ import { useQuiz } from '@/context/quiz-context';
 
 export default function TabTwoScreen() {
     const { quiz, setQuiz } = useQuiz();
-    const [weight, setWeight] = useState('');
-    const [gender, setGender] = useState('');
+    const [workoutDays, setWorkoutDays] = useState<number[]>([]);
 
     const nextQuiz = () => {
-        const numericWeight = parseFloat(weight);
-        if (!gender || isNaN(numericWeight)) {
-            alert('Please select a gender and enter a valid weight.');
+        if (workoutDays.length === 0) {
+            alert('Please select at least one workout day.');
             return;
         }
 
-        setQuiz({ ...quiz, gender: gender as 'Male' | 'Female' | 'Other', weight: numericWeight });
-        router.push('/quiz/quiz2'); // go to next screen
+        setQuiz({ ...quiz, workoutDays });
+        router.push('/quiz/quiz_sub'); // go to next screen
+    };
+
+    const toggleDay = (day: number) => {
+        setWorkoutDays(prev =>
+            prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+        );
     };
 
 
@@ -30,31 +34,22 @@ export default function TabTwoScreen() {
     return (
         <NoTabSV>
             <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title">Step 1: Weight & Gender</ThemedText>
+                <ThemedText type="title">Step 3: Select your workout days</ThemedText>
             </ThemedView>
-            <TextInput
-                style={styles.input}
-                keyboardType="numeric"
-                placeholder="Enter your weight (lbs)"
-                placeholderTextColor="#aaa"
-                value={weight}
-                onChangeText={setWeight}
-            />
 
-
-            <ThemedView style={styles.genderContainer}>
-                <Pressable
-                    style={[styles.genderButton, gender === 'Male' && styles.selected]}
-                    onPress={() => setGender('Male')}
-                >
-                    <ThemedText >Male</ThemedText>
-                </Pressable>
-                <Pressable
-                    style={[styles.genderButton, gender === 'Female' && styles.selected]}
-                    onPress={() => setGender('Female')}
-                >
-                    <ThemedText>Female</ThemedText>
-                </Pressable>
+            <ThemedView style={styles.daysContainer}>
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                    <Pressable
+                    key={index}
+                    style={[
+                        styles.dayButton,
+                        workoutDays.includes(index) && styles.selected
+                    ]}
+                    onPress={() => toggleDay(index)}
+                    >
+                    <ThemedText>{day}</ThemedText>
+                    </Pressable>
+                ))}
             </ThemedView>
 
 
@@ -90,18 +85,22 @@ const styles = StyleSheet.create({
         padding: 12,
         fontSize: 16,
     },
-    genderContainer: {
+    daysContainer: {
         flexDirection: 'row',
+        flexWrap: 'wrap',
         gap: 10,
         justifyContent: 'center',
+        marginTop: 10,
     },
-    genderButton: {
+    dayButton: {
         paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 12,
         borderRadius: 5,
         backgroundColor: '#333',
         borderWidth: 1,
         borderColor: '#aaa',
+        minWidth: 45,
+        alignItems: 'center',
     },
     selected: {
         backgroundColor: '#4aa8ff',

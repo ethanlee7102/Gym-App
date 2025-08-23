@@ -10,6 +10,7 @@ type QuizData = {
   gender: 'Male' | 'Female' | 'Other';
   weight: number;
   personalRecords: PersonalRecords;
+  workoutDays: number[]
 };
 
 type QuizContextType = {
@@ -29,6 +30,7 @@ const defaultQuiz: QuizData = {
     bench: 0,
     deadlift: 0,
   },
+  workoutDays: [],
 };
 
 const QuizContext = createContext<QuizContextType>({

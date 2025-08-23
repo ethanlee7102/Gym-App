@@ -11,8 +11,8 @@ router.post('/quiz/submit', async (req, res) => {
 
     try{
         const { id } = jwt.verify(token, SECRET);
-        const { gender, weight, personalRecords } = req.body;
-        const profilePicture = 'https://gymapp-post-images.s3.us-west-2.amazonaws.com/profile-pic/1753340263142-photo.jpg';
+        const { gender, weight, personalRecords, workoutDays, timezone } = req.body;
+        const profilePicture = 'https://gymapp-post-images.s3.us-west-2.amazonaws.com/profile-pic/1753829552138-photo.jpg';
         const coeffs = {
             Male: {
             a: -307.75076,
@@ -48,14 +48,34 @@ router.post('/quiz/submit', async (req, res) => {
 
         const DOTSrank = getDotsRank(dots);
 
+        const wrappedPRs = {
+            squat: {
+                weight: personalRecords.squat,
+                verified: false, // default, can be updated later
+                videoUrl: ''
+            },
+            bench: {
+                weight: personalRecords.bench,
+                verified: false,
+                videoUrl: ''
+            },
+            deadlift: {
+                weight: personalRecords.deadlift,
+                verified: false,
+                videoUrl: ''
+            }
+        };
+
         const updatedUser = await User.findByIdAndUpdate(id, {
-            gender,
-            weight,
-            personalRecords,
-            quizComplete: true,
-            profilePicture,
-            dots,
-            DOTSrank,
+                gender,
+                weight,
+                personalRecords: wrappedPRs,
+                quizComplete: true,
+                profilePicture,
+                dots,
+                DOTSrank,
+                timezone,
+                workoutDays
             },
             { new: true }
         )

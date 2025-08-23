@@ -6,22 +6,24 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import { getStreakLeaderboard } from '@/app/api/api';
+import { getDotsLeaderboard } from '@/app/api/api';
 
-export default function StreakLeaderboard() {
+export default function TabTwoScreen() {
+
     type LeaderboardUser = {
         _id: string;
         username: string;
         profilePicture?: string;
-        streak: number;
+        dots: number;
+        DOTSrank: string;
     };
     const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
     const [loading, setLoading] = useState(true);
-
+    
     useEffect(() => {
         const loadLeaderboard = async () => {
             try {
-                const res = await getStreakLeaderboard();
+                const res = await getDotsLeaderboard();
                 setLeaderboard(res.data);
             } catch (err) {
                 console.error('Failed to load leaderboard', err);
@@ -31,27 +33,24 @@ export default function StreakLeaderboard() {
         };
         loadLeaderboard();
     }, []);
-
     return (
-        <ParallaxScrollView
-            header={
-                <View style={styles.titleContainer}>
-                    <ThemedText type="title"> Leaderboard</ThemedText>
-                </View>
-            }
-        >
+        <ParallaxScrollView header={
+            <View style={styles.titleContainer}>
+                <ThemedText type="title">Leaderboard4</ThemedText>
+            </View>
+        }>
             <View style={styles.buttonContainer}>
-                <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-1')}>
-                            <ThemedText type='smallSemiBold'>Streaks</ThemedText>
+                <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-streak')}>
+                    <ThemedText type='smallSemiBold'>Streaks</ThemedText>
                 </Pressable>
-                <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-2')}>
-                            <ThemedText type='smallSemiBold'>Level</ThemedText>
+                <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-level')}>
+                    <ThemedText type='smallSemiBold'>Level</ThemedText>
                 </Pressable>
                 <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-3')}>
-                            <ThemedText type='smallSemiBold'>ELO?</ThemedText>
+                    <ThemedText type='smallSemiBold'>ELO?</ThemedText>
                 </Pressable>
-                <Pressable style={styles.button} onPress={() => router.push('/leaderboard/leaderboard-4')}>
-                            <ThemedText type='smallSemiBold'>DOTS</ThemedText>
+                <Pressable style={styles.buttonSelected} onPress={() => router.push('/leaderboard/leaderboard-dots')}>
+                    <ThemedText type='smallSemiBold'>DOTS</ThemedText>
                 </Pressable>
             </View>
 
@@ -64,11 +63,12 @@ export default function StreakLeaderboard() {
                         <Image source={{ uri: item.profilePicture }} style={styles.avatar} />
                         <View style={styles.infoContainer}>
                             <ThemedText style={styles.username}>{item.username}</ThemedText>
-                            <ThemedText style={styles.streak}>{item.streak}🔥</ThemedText>
+                            <ThemedText style={styles.dots}>{item.dots.toFixed(2)}</ThemedText>
                         </View>
                     </ThemedView>
                 ))
             )}
+
         </ParallaxScrollView>
     );
 }
@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
         gap: 8,
         paddingTop: 10,
     },
+
+
     itemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#fff',
     },
-    streak: {
+    dots: {
         fontSize: 14,
         color: '#aaa',
     },
@@ -122,17 +124,31 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    padding: 0,
-   
-    backgroundColor: '#373737',
-    borderColor: '#AFAFAF',
-    borderWidth: 1,
-    margin: 5,
-    
-    width: 80,
-    height: 30
-  },
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
+        padding: 0,
+
+        backgroundColor: '#373737',
+        borderColor: '#AFAFAF',
+        borderWidth: 1,
+        margin: 5,
+
+        width: 80,
+        height: 30
+    },
+    buttonSelected: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
+        padding: 0,
+
+        backgroundColor: '#919191ff',
+        borderColor: '#AFAFAF',
+        borderWidth: 1,
+        margin: 5,
+
+        width: 80,
+        height: 30
+    },
 });

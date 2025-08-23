@@ -6,10 +6,10 @@ import { NavigationContainerRefContext, useNavigationContainerRef } from '@react
 export default function IndexLayout() {
     return (
         <Stack screenOptions={{ headerShown: false }} >
-            <Stack.Screen name="leaderboard-1" options={{ animation: 'none' }} />
-            <Stack.Screen name="leaderboard-2" options={{ animation: 'none' }} />
+            <Stack.Screen name="leaderboard-streak" options={{ animation: 'none' }} />
+            <Stack.Screen name="leaderboard-level" options={{ animation: 'none' }} />
             <Stack.Screen name="leaderboard-3" options={{ animation: 'none' }} />
-            <Stack.Screen name="leaderboard-4" options={{ animation: 'none' }} />
+            <Stack.Screen name="leaderboard-dots" options={{ animation: 'none' }} />
         </Stack>
         
     );
