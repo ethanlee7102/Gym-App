@@ -78,14 +78,14 @@ export default function TabTwoScreen() {
 
         try {
             const { data } = await getUploadUrl('profile-pic');
-            const { uploadUrl, imageUrl } = data;
+            const { uploadUrl, fileUrl: imageUrl } = data;
 
 
-            // ✅ Get file as blob
+            // get file as blob
             const response = await fetch(img.uri);
             const blob = await response.blob();
 
-            // ✅ Upload blob to S3
+            // upload blob to S3
             const uploadRes = await fetch(uploadUrl, {
                 method: 'PUT',
                 headers: {

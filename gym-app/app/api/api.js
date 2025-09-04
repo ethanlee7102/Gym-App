@@ -44,7 +44,7 @@ export const getSentFriendRequests = async () => {
     });
 };
 
-export const getUploadUrl = async (type) => {
+export const getUploadUrl = async (type, fileType = 'image/jpeg') => {
     const token = await AsyncStorage.getItem('token');
     return axios.get(`${API_BASE}/api/upload-url`, {
       headers: { Authorization: `Bearer ${token}` },

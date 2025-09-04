@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
     gender: { type: String, enum: ['Male', 'Female', 'Other'], default: null },
     weight: { type: Number, default: null },
     quizComplete: { type: Boolean, default: false },
-    profilePicture: { type: String, default: 'https://gymapp-post-images.s3.us-west-2.amazonaws.com/profile-pic/1753829552138-photo.jpg' },
+    profilePicture: { type: String, default: 'https://gymapp-post-images.s3.us-west-2.amazonaws.com/profile-pic/1756954428088-upload.jpg' },
     dots: { type: Number, default: 0 },
     DOTSrank: { type: String, enum: ['Unranked', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Elite', 'Freak', 'GOAT'], default: 'Unranked' },
     lastCheckIn: { type: Date, default: null },
