@@ -98,6 +98,7 @@ app.get('/me', async (req, res) => {
 });
 
 app.post('/api/profile-picture', async (req, res) => {
+    const DEFAULT_PROFILE_PIC = "https://gymapp-post-images.s3.us-west-2.amazonaws.com/profile-pic/1756954428088-upload.jpg"
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).send({ error: 'Unauthorized' });
     try {
@@ -113,7 +114,7 @@ app.post('/api/profile-picture', async (req, res) => {
         if (!user) return res.status(404).send({ error: 'User not found' });
 
 
-        if (user.profilePicture) {
+        if (user.profilePicture && user.profilePicture != DEFAULT_PROFILE_PIC) {
             const oldKey = user.profilePicture.split('/').pop();
             try {
                 const deleteRes = await s3Client.send(new DeleteObjectCommand({
